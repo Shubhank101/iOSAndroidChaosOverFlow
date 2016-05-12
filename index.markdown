@@ -6,9 +6,9 @@ title: iOS Android ChaosOverFlow!
 ### Rules for our chat room
 1) Be nice to everyone.
 
-2) Use english for conversation only. Use of other languages can lead to banning you from the room.
+2) Use only english for conversation. Use of other languages can lead to banning you from the room.
 
-3) Don't be a help vampire.
+3) Don't be a <b>help vampire<b>.
 
 4) Use <a href="http://gist.github.com"> Gist </a> to share code in the chat.
 
