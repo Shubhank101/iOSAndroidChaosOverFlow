@@ -4,7 +4,6 @@ category : lessons
 tagline: "Hello word"
 tags : [intro, beginner, swift, tutorial]
 ---
-{% include JB/setup %}
 
 
 ## Overview
