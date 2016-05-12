@@ -3,7 +3,7 @@ title: iOS/Android [ChaosOverFlow]
 email: your-email@domain.com
 description: >
   iOS Android ChaosOverFlow Chat room site.
-baseurl: "/iOSAndroidChaosOverFlow/"
+baseurl: "/iOSAndroidChaosOverFlow"
 url: "http://alexcarpenter.me"
 fixedNav: 'true' # true or false
 theme: grey # green, blue, orange, purple, grey
