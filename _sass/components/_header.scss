@@ -12,8 +12,10 @@
 
 .c-header__title {
   position: relative;
-  @include ff--mono(500);
+  font-family: 'Helvetica', monospace;
+  font-weight: 200;
   @include fs--title;
+  font-size: 6rem;  
   color: $c__white;
 
   &:after {
