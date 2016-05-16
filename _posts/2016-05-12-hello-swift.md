@@ -82,10 +82,8 @@ Go Ahead and check the playground to see all this live. We have added comments t
 
 ## Conclusion
 
-
 **Thank you** for reading this far. For any questions you are welcome to ask in our chat room.
 
 ## Next Steps
 
-Please take a look at [{{ site.categories.api.first.title }}]({{ BASE_PATH }}{{ site.categories.api.first.url }})
-or jump right into [Usage]({{ BASE_PATH }}{{ site.categories.usage.first.url }}) if you'd like.
+Please take a look at our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
