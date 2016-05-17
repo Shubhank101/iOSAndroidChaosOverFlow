@@ -6,11 +6,9 @@ tags : [intro, beginner, swift, tutorial]
 ---
 
 
-## Overview
+# What is Swift?
 
-### What is Swift?
-
-Swift is new apple open source language used to develop iOS Apps.  
+Swift is a new apple open source language used to develop iOS Apps.  
 It is open source and available now on [github](https://github.com/apple/swift) replacing objective-c as the main language for the iOS and OSX platform.
 
 The advantage over objective c consist of :
@@ -26,8 +24,9 @@ print(helloWorld)
 {% endhighlight %}
 
 ## First Project
+Its time to dive right into exploring swift. Lets get started
 
-1) Open Xcode and create a new playground
+### Open Xcode and create a new playground
 We will be using the playground to learn basic swift before progressing on to make a app.
 Go ahead create a new playground from the **File->New** option.  
 First screen shall look like this
