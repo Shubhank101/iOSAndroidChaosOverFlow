@@ -8,14 +8,14 @@ tags : [intro, beginner, swift, tutorial]
 
 # What is Swift?
 
-Swift is a new apple open source language used to develop iOS Apps.  
-It is open source and available now on [github](https://github.com/apple/swift) replacing objective-c as the main language for the iOS and OSX platform.
+Swift is a new Apple open-source language used to develop iOS Apps.
+It is open source and available now on [GitHub](https://github.com/apple/swift); replacing Objective-C as the main language for the iOS and OSX platforms.
 
-The advantage over objective c consist of :
+The advantages of Swift over Objective-C are:
 
  1. Faster - Swift apps compile faster then their obj-c counterparts.  
- 2. Safe   - Swift focuses a lot on let and var which makes the code safe by avoiding any un intended overwrite of values.  
- 3. Strong - Swift supports generic, enums and a whole lot of new features which makes it a better language to develop in.  
+ 2. Safe   - Safe - Swift focuses a lot on ‘let’ and ‘var’ which makes the code safe by avoiding any unintended overwrite of values.
+ 3. Strong - Swift supports generic, enums and a lot of new features which makes it a better language to develop in.
 
 
 {% highlight swift %}
@@ -27,8 +27,8 @@ print(helloWorld)
 Its time to dive right into exploring swift. Lets get started
 
 ### Open Xcode and create a new playground
-We will be using the playground to learn basic swift before progressing on to make a app.
-Go ahead create a new playground from the **File->New** option.  
+We will be using the playground to learn basic swift before progressing on to make an app.
+Go Ahead create a new playground from the **File->New** option.  
 First screen shall look like this
 ![Playground](http://i.imgur.com/QOSeJQV.jpg)
 
