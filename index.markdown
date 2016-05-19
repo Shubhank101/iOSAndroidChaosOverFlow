@@ -14,6 +14,7 @@ title: iOS Android ChaosOverFlow!
 
 5) Don't ping multiple people for help. Its considered rude, if someone is free he/she will help.
 
+6) Please use a non-generic display image if you intend to hang around in the chat. The plain simple SO avatars for profile is boring and confusing when 10 of you are talking in the room
 ### Guidelines
 
 1) Don't abuse the bot. It is there for helpful/fun purpose but please do not use it to spam the room or do other nonsense stuff.
