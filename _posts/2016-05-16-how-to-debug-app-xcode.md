@@ -179,7 +179,6 @@ There it is.. you see **if(index <10)** .. that is the culprit and removing that
 ## Conclusion
 
 **Thank you** for reading this far. For any questions you are welcome to ask in our chat room.
-t our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
 
 ### For further info
 
@@ -188,4 +187,4 @@ t our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
 
 ## Next Steps
 
-Please take a look a
+Please take a look at our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
