@@ -101,13 +101,91 @@ this class is not key value coding-compliant for the key randomLabelOutlet.
 	7   UIKit                               0x000000010826a924 -[UINib instantiateWithOwner:options:] + 1864
 	8   UIKit                               0x0000000108043eea -[UIViewController _loadViewFromNibNamed:bundle:] + 381
 	9   UIKit                               0x0000000108044816 -[UIViewController loadView] + 178
-	10  UIKit                               0x0000000108044b74 -[UIViewController loadViewIfRequired] + 
+	10  UIKit                               0x0000000108044b74 -[UIViewController loadViewIfRequired] +
+  
 {% endhighlight %}
+
+If you will read from bottom to top. you will see that `loadView` method is called and then during `UIRuntimeOutletConnection` class method a crash occurs.
+This is why stack trace is helpful as it gives you hint to proceed further by telling you the method calls that took place.
+The exception points to **class is not key value coding-compliant for the key randomLabelOutlet**
+
+With this much info, we are ready to solve this one. If you will google for the exception error, you will come across many threads that also points to some outlet connection being broken.
+To solve this, we are going to search for `randomLabelOutlet` in our project.
+And there it is.  
+![Search Result](http://i.imgur.com/JAqA8kC.jpg)  
+
+![Broken Outlet](http://i.imgur.com/fjRsCFg.png)
+
+**Remove the broken outlet** and now clicking the first row in tableview would work in the app.
+
+___
+
+# Logical Errors
+
+These are the creepy ones and we have **one** in our project :D  
+Run the project and try clicking any of the bottom rows in the list. This time you will be faced with this
+![image url nil](http://i.imgur.com/Sgipdlt.jpg)
+
+A simple google search will show you need to use **if let** for optionals unwrapping but the point here is that why is our **imageURL** nil in the first place. It definitely works for the first result of the table.
+
+### App Flow
+Here is a basic recap of what the app does. The first VC downloads the app results for the tag **fifa** and in the second VC we just download the image from the app icon url and set it in a imageView.
+
+### How to proceed
+
+1) Set breakpoint on the `print(imageURL)` line
+![Breakpoint added](http://i.imgur.com/iEkf9BL.png)
+
+Run the code and try any of the last rows in the table or the first few rows.  
+For the first few rows, the value in values inspector shows like
+
+![First Image result](http://i.imgur.com/LaGsMzf.jpg)
+___
+
+For the last few rows :
+![Second Image result](http://i.imgur.com/NHYCYZ9.jpg)
+___
+
+2) Checking the source  
+As you can see image url is for some weird reason **nil** for the last rows.
+To solve it, we need to think back in our code and check where is the image url set from.
+Our code sets it in the `prepareForSegue` method in firstVC
+{% highlight swift %}
+       if let destinationVC = segue.destinationViewController as? ShowImageViewController {
+            let indexPath = self.tableView.indexPathForSelectedRow
+            destinationVC.imageURL = appList[indexPath!.row].url
+        }
+{% endhighlight %}
+
+Seems nothing wrong here, it just get the data from the appList variable and set the url. This forces us to check if our **appList** variable actually contains proper data.
+Search for the appList variable and you will soon come to source
+
+{% highlight swift %}
+  for (index,gameDict) in arr.enumerate() {
+      let model = AppModel()
+      model.name = gameDict["trackCensoredName"] as! String
+
+      if (index < 10) {
+          model.url = gameDict["artworkUrl512"] as? String                            
+      }
+      self.appList.append(model)
+
+  }
+{% endhighlight %}
+
+There it is.. you see **if(index <10)** .. that is the culprit and removing that if condition will make this project work as it was intended to.
+
 
 ## Conclusion
 
 **Thank you** for reading this far. For any questions you are welcome to ask in our chat room.
+t our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
+
+### For further info
+
+[Apple Debugging Support](https://developer.apple.com/support/debugging/)
+
 
 ## Next Steps
 
-Please take a look at our other [tutorials]({{ BASE_PATH }}../../tutorials) :)
+Please take a look a
