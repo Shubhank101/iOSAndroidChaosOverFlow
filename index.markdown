@@ -16,7 +16,9 @@ title: iOS Android ChaosOverFlow!
 
 6) Please use a non-generic display image if you intend to hang around in the chat. The plain simple SO avatars for profile is boring and confusing when 10 of you are talking in the room.
 
-### Guidelines
+### Guidelines 
+
+The are not to be followed strictly.. Room owners can enforce them as per their own judgement
 
 1) Don't abuse the bot. It is there for helpful/fun purpose but please do not use it to spam the room or do other nonsense stuff.
 
