@@ -28,8 +28,9 @@ These are not to be followed strictly.. Room owners can enforce them as per thei
 ### For Users New to the site!
 
 A chat room isn't a replacement for the main site. This is more of a social aspect. Not everyone here comes to help each other, you would find people sharing common interest. They like to help once they come across a interesting question or generally know.
-Try simply saying a hi and introducing yourself and then asking your question. This will be your best bet to get answers. Simply asking help me/anyone here/ can i ask a question here and people might just ignore, they dont know you and are not sure if you would actually ask a good question or not.
-Also if you ask a question, please post all relevant details that the other developer can use to help you. Most of the time it is just sharing what you have already tried!
+
+Try simply saying a hi and introducing yourself and then asking your question. This will be your best bet to get answers. Simply asking *help me/anyone here/ can i ask a question here* and people might just ignore, they dont know you and are not sure if you would actually ask a good question or not.
+Also if you ask a question, please **post all relevant details** that the other developer can use to help you. Most of the time it is just sharing what you have already tried!
 
 
 
