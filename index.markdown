@@ -3,7 +3,7 @@ layout: page
 title: iOS Android ChaosOverFlow!
 ---
 
-### Rules for our chat room
+### Rules for our [chat](http://chat.stackoverflow.com/rooms/26424/iosandroidchaosoverflow) room
 1) Be nice to everyone.
 
 2) Use only english for conversation. Use of other languages can lead to banning you from the room.
@@ -25,7 +25,11 @@ These are not to be followed strictly.. Room owners can enforce them as per thei
 2) Ask your question on the main site and then share the link in the chat. Asking your question on main site allow more people to get help when they see your question later on during search and you are contributing to the community this way.
 
 
+### For Users New to the site!
 
+A chat room isn't a replacement for the main site. This is more of a social aspect. Not everyone here comes to help each other, you would find people sharing common interest. They like to help once they come across a interesting question or generally know.
+Try simply saying a hi and introducing yourself and then asking your question. This will be your best bet to get answers. Simply asking help me/anyone here/ can i ask a question here and people might just ignore, they dont know you and are not sure if you would actually ask a good question or not.
+Also if you ask a question, please post all relevant details that the other developer can use to help you. Most of the time it is just sharing what you have already tried!
 
 
 
