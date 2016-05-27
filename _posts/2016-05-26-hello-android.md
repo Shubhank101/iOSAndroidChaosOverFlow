@@ -34,7 +34,24 @@ Why you should use android studio and not other IDE like eclipse/Intelli J etc ?
   
 ## Android UI Components  
 
-You define your application screen UI in xml files/graphical editor. The xml files mostly consider of using UI components provided by the framework to layout the elements on the screen. We list out the most common one used here 
+You define your application screen UI in xml files/graphical editor. The xml files mostly consider of using UI components provided by the framework to layout the elements on the screen. We list out the most common one used here
+
+## Layouts
+Layouts are the UI component that controls the positioning and layout of their children. You can nest layout inside one another.
+
+### LinearLayout
+
+Linearlayout is a commonly used layout to (as the name suggests) lay the children UI Views linearly either in a horizontal stack or a vertical.
+
+![Linear Layout](http://i.imgur.com/B4lFtoh.jpg)
+
+
+### RelativeLayout
+
+Linearlayout is a commonly used layout to (as the name suggests) lay the children UI Views linearly either in a horizontal stack or a vertical.
+
+![Linear Layout](http://i.imgur.com/NOoZprc.jpg)
+
 
 
 ## Conclusion
