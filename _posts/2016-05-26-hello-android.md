@@ -120,7 +120,7 @@ Data storage is a important decision in every app and Android consist of few opt
 3. **Direct File Storage** : You can write whatever format of data with a custom blue print and read it back. Avoided by most of the developers.
 4. **Realm** : A new third party library that is really similar to sqlite except its syntax is more object oriented and modern, therefore, faster development!.
 
-## Tips/Common Pitfuls
+## Tips/Common Pitfalls
 
 In this section we point across common mistakes all developers do while developing apps and maybe you can avoid them if you know them beforehand
 
