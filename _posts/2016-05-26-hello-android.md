@@ -151,6 +151,8 @@ Select Blank Activity template and press finish on the next screen to have defau
 
 All your java code files reside in the **src** folder while the **res** folder consist of the assets including manifest, drawable/images, layout files etc.
 
+Try running the app to see the Hello World textiview ready and setup for you already.
+
 
 
 ## Interface
