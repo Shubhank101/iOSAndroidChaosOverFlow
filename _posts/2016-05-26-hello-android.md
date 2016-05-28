@@ -64,6 +64,39 @@ There are more layouts waiting to be explored like DrawerLayout, GridLayout etc 
 
 ## Activity
 
+Activity are the basic individual screen component in Android. When you launch an app, you basically open one of its screen and that is an *Activity*. Its basically the **controller** part in an MVC app.
+
+## Fragments
+
+Fragments are the middleware between the controller and the view in a MVC model. Main difference b/w fragment and activity is that fragment needs to be hosted in a activity therefore they do not exist on their own. They always need to be added to an activity's view to be shown.
+
+### Which one to use and when
+
+1) Well there has to be one activity at least in your app, otherwise no UI screen can be launched.  
+2) Now, do you want the view you are designing to be launched individually or do you want everytime user to go from A->B. If you want B be to be allowed to launch individually : it needs to be an activity.
+3) Are you making a resuable kind of view, well not exactly a view but a wrapper that shows a particular view and act as its controller : if yes, go for a fragment.
+
+
+
+## Manifest
+
+Manifest is the file that describes how your app appear to the OS and in the play store. It contains certain terms that define app features, descriptions, list of activities etc.
+App's manifest includes these  
+ * App Package Identifier - this is a identifier that uniquely identifies your app and is in the reverse domain format (com.domain.appname)  
+ * App name - Name to be shown on user device/play store  
+ * Icon file - Which is the icon to show in app drawer.  
+ * List of activities - Each activity/individual screen is defined in the manifest.  
+ * Permissions - Your app require maybe access to location or maybe read user contacts.  
+ * Features - Your app is defined for only call enabled devices (not tablets).  
+ * Min OS version supported - Defines which is the OS that can install the app and none below can.  
+ 
+
+
+# Gradle
+ 
+ 
+
+
 ## Conclusion
 
 **Thank you** for reading this far. For any questions you are welcome to ask in our chat room.
