@@ -74,7 +74,7 @@ Fragments are the middleware between the controller and the view in a MVC model.
 
 1) Well there has to be one activity at least in your app, otherwise no UI screen can be launched.  
 2) Now, do you want the view you are designing to be launched individually or do you want everytime user to go from A->B. If you want B be to be allowed to launch individually : it needs to be an activity.  
-3) Are you making a resuable kind of view, well not exactly a view but a wrapper that shows a particular view and act as its controller : if yes, go for a fragment.
+3) Are you making a resuable view?  Well not exactly a view but a **wrapper** that shows a particular view and act as its controller : **if yes, go for a fragment**.
 
 
 
@@ -97,8 +97,8 @@ App's manifest includes these
 
 Gradle is the de-facto way Google has come up with to **maintain dependencies** in a project. Its kinda similar to cocoapods in iOS, npm in JS and composer in php.  
 
-Your project will often contain third party code such as Facebook, Google+ or simply a lib that manages image downloads and stuff. It is tiresome to go download these files and add them to your project. Gradle solves this by maintaing the standard of dependency, you just have to add the gradle repository url for the lib you want to integrate and it will go ahead and download the files and **configure your project** to make the lib work properly.
-`build.gradle` file is used to manage this. A sample version is shown below
+Your project will often contain third party code such as Facebook, Google+ or simply a lib that manages image downloads and stuff. It is tiresome to go download these files and add them to your project. Gradle solves this by maintaing the standard of dependency, you just have to add the gradle repository url for the lib you want to integrate and it will go ahead and download the files and **configure your project** to make the lib work properly.  
+**Build.gradle** file is used to manage this. A sample version is shown below
 
 {% highlight xml %}
 
@@ -116,15 +116,15 @@ dependencies {
 Data storage is a important decision in every app and Android consist of few options for it
 
 1. **Shared Preference** : Shared preferences is the simple preferences saving api provided by the framework that can be used to store simple preferences like user name, favorite theme for your app and so on. It is not intended to be used for huge/complex objects.  
-2. **SQLite** : SQLite is the most used database storage used by developers due to it being a RDMS. It implements the caching, query processing, transactions and a whole list of other feature you would expect a sensitive data app to have.
-3. **Direct File Storage** : You can write whatever format of data with a custom blue print and read it back. Avoided by most of the developers
+2. **SQLite** : SQLite is the most used database storage by developers due to it being a RDMS. It implements the caching, query processing, transactions and a whole list of other feature you would expect a sensitive data app to have.
+3. **Direct File Storage** : You can write whatever format of data with a custom blue print and read it back. Avoided by most of the developers.
 4. **Realm** : A new third party library that is really similar to sqlite except its syntax is more object oriented and modern, therefore, faster development!.
 
 ## Tips/Common Pitfuls
 
 In this section we point across common mistakes all developers do while developing apps and maybe you can avoid them if you know them beforehand
 
-1. All xml and drawables can use lowercase alphabets. A file like *MyView.xml* or *myImage.png* will throw an error.  
+1. All xml and drawables can **only use lowercase alphabets**. A file like *MyView.xml* or *myImage.png* will throw an error.  
 2. Every activity needs to be defined in manifest before using it in code. You can't open a activity which is not declared in the app's manifest, doing so will result in a crash.
 3. Check if you have specified permission for the feature you are coding. Many tasks require permission from the user including even accessing the internet, make sure you have added that permission in the manifest.
 
