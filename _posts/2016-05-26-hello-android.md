@@ -155,7 +155,11 @@ Try running the app to see the Hello World textiview ready and setup for you alr
 
 
 
-## Interface
+### 2. Interface
+
+Here is what our final interface is going to look like
+
+![Interface](http://i.imgur.com/niH9V4F.jpg)
 
 
 
