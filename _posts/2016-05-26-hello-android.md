@@ -48,11 +48,21 @@ Linearlayout is a commonly used layout to (as the name suggests) lay the childre
 
 ### RelativeLayout
 
-Linearlayout is a commonly used layout to (as the name suggests) lay the children UI Views linearly either in a horizontal stack or a vertical.
+RelativeLayout lay it children in relation to one another or to itself. You can use `alignParentLeft` to make the view position at top-left and `alignCenterInParent` to make view center in the whole layout.
 
-![Linear Layout](http://i.imgur.com/NOoZprc.jpg)
+![Relative Layout](http://i.imgur.com/NOoZprc.jpg)
+
+### FrameLayout
+
+FrameLayout works on the z axis/order basis. Other layouts do not allow you to specify views overlapping one another however frame layout does.
+
+![Frame Layout](http://i.imgur.com/lw3vr7p.jpg)
 
 
+There are more layouts waiting to be explored like DrawerLayout, GridLayout etc but they are specific and we are not explaining them here for now. The above explained layouts are the most commonly used to design any complex UI screen you wish.
+
+
+## Activity
 
 ## Conclusion
 
