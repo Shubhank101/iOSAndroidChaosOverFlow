@@ -5,7 +5,9 @@ tagline: "Hello Android"
 tags : [intro, beginner, android, tutorial]
 ---
 
-> This is a general summarized version of our take on explaining Android development for you. Its by no means a complete and extensive tutorial that covers everything. This is to give you a good grasp of things of the framework, best practices used by us and generally a simple tutorial after which you are ready to take on any topic you are interested in Android :)
+# Part 1 - Theoritical And Best practices for Android
+
+> This is a general summarized version of our take on explaining Android development for you. Its by no means a complete topic that covers everything. This is to give you a good grasp of things of the framework, best practices used by us and generally a simple tutorial after which you are ready to take on any topic you are interested in Android :)
 
 # What is Android?
 
@@ -128,7 +130,30 @@ In this section we point across common mistakes all developers do while developi
 2. Every activity needs to be defined in manifest before using it in code. You can't open a activity which is not declared in the app's manifest, doing so will result in a crash.
 3. Check if you have specified permission for the feature you are coding. Many tasks require permission from the user including even accessing the internet, make sure you have added that permission in the manifest.
 
+---
 
+## Part 2 - Coding your first App
+
+Follow along to make a simple app that stores basic user basic details using input by user and persist them for next launch.
+
+### 1. Create a new project in Android Studio
+
+Open Android Studio and click create new project from File->New
+![New Project Window](http://i.imgur.com/EtRgtft.jpg)
+
+Name the project **UserDetails** and continue to the next window. You might be seeing the option to choose the SDK, i have lollipop sdk installed, you can use any lollipop or marshmallow version and continue to next window.  
+Select Blank Activity template and press finish on the next screen to have default activity file name set up for you.
+
+
+### Project Structure
+
+![Project Structure](http://i.imgur.com/3Lgk7Bi.jpg)
+
+All your java code files reside in the **src** folder while the **res** folder consist of the assets including manifest, drawable/images, layout files etc.
+
+
+
+## Interface
 
 
 
