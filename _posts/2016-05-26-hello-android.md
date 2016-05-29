@@ -43,7 +43,7 @@ So rule of thumb is to specify size in dp instead of pixels.
 
 Common design terminologies
 
-1. **wrap_content** : wrap content for width/height is specified when you want the layout to take as much height as its content.
+1. **wrap_content** : wrap content for width/height is specified when you want the layout to take as much width/height as its content.
 2. **match_parent** : match parent is used when you want the view to take up all space in its parent. Using match_parent does not gaurantee full space though, OS calculates the space available and if otherview take up some space, your view will get whole view space-otherviews space height/width.
 
 
@@ -375,8 +375,8 @@ To persist the imagePath update your onActivityResult method 'try' block with
 
 {% highlight java %}
   SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-                        editor.putString("image" , loadImageButton.toString());
-                        editor.commit();
+  editor.putString("image" , loadImageButton.toString());
+  editor.commit();
 {% endhighlight %}
 
 Now we have got everything working except the app doesnt load previous values we saved on launch.
