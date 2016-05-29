@@ -36,6 +36,17 @@ Why you should use android studio and not other IDE like eclipse/Intelli J etc ?
   
 ## Android UI Components  
 
+### UI Basics
+
+A typical Android device can be of any size and therefore you can't simply go around thinking values in pixels. 1 pixel might be quite big in one device but very small in another. The solution is to use **dpi(Device independent pixel)**. Most of the time you will hear the **dp** term which is the same as dpi.
+So rule of thumb is to specify size in dp instead of pixels.
+
+Common design terminologies
+
+1. **wrap_content** : wrap content for width/height is specified when you want the layout to take as much height as its content.
+2. **match_parent** : match parent is used when you want the view to take up all space in its parent. Using match_parent does not gaurantee full space though, OS calculates the space available and if otherview take up some space, your view will get whole view space-otherviews space height/width.
+
+
 You define your application screen UI in xml files/graphical editor. The xml files mostly consider of using UI components provided by the framework to layout the elements on the screen. We list out the most common one used here
 
 ## Layouts
@@ -78,6 +89,8 @@ Fragments are the middleware between the controller and the view in a MVC model.
 2) Now, do you want the view you are designing to be launched individually or do you want everytime user to go from A->B. If you want B be to be allowed to launch individually : it needs to be an activity.  
 3) Are you making a resuable view?  Well not exactly a view but a **wrapper** that shows a particular view and act as its controller : **if yes, go for a fragment**.
 
+## Intent
+Intent is used to communicate with other activities within the OS or within the app itself. They are at the core of the android framework. If you want to launch browser app - just create a new intent specifiying its package. If you want to open another activity of your app - create another and set the activity class and just launch the intent.
 
 
 ## Manifest
