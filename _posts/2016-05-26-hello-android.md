@@ -161,6 +161,182 @@ Here is what our final interface is going to look like
 
 ![Interface](http://i.imgur.com/niH9V4F.jpg)
 
+Open up content_main.xml and replace it with the following content
+
+{% highlight xml %}
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_main" tools:context=".MainActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:src="@android:drawable/sym_def_app_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
+
+
+    <Button
+        android:id="@+id/updateImageButton"
+        android:layout_below="@id/imageView"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Image"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/updateImageButton"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+
+        <EditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Name"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+{% endhighlight %}
+
+Our root layout is a RelativeLayout. In it we add a ImageView which is centered horizontally, a button to launch the intent to get the image from user gallery aligned below it.
+Then we add a vertical linear layout to just show nesting of layouts. One can simply go and put the EditText below the button by using `alignBelow` but we have instead put the layout below the button and inside it put the EditText.
+
+
+
+### 3. Connecting Xml Views with Code
+
+Your views have been defined in xml but we need to be able to access them in our activity file. In our `onCreate` method of Activity we assign the layout to the activity with the id `R.layout.activity_main`.
+Replace your **onCreate** method and add a few in your activity file like below
+
+{% highlight java %}
+
+public class MainActivity extends AppCompatActivity {
+
+    ImageView profileImg;
+    EditText nameTxt;
+    Button loadImageButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initUI();
+        setActionListener();
+    }
+
+    void initUI() {
+        profileImg = (ImageView) findViewById(R.id.imageView);
+        nameTxt = (EditText) findViewById(R.id.edittext);
+        loadImageButton = (Button) findViewById(R.id.updateImageButton);
+    }
+
+    void setActionListener() {
+        loadImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+        
+        nameTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+{% endhighlight %}
+
+We declare few variables at the start so that we can refer them globally inside our class. Now in our `onCreate` we set the contentView and then try to hook up the connections in the `initUI()` function we added. Do note that trying to setup connections before calling the appt **setContentView** call will result in a crash.
+
+`initUI` method calls findViewById method to find the respective view with the id we set it in xml and then we cast it to the specific type we have made it. 
+Next we want to have the button do something on the click, so we make a `setActionListener` method and assign a onClickListener to the loadImageButton and a TextWatcher to our nameTxt to listen for events of text changing.
+
+
+### 4. Saving User Input
+
+In our `TextWatcher` afterTextChanged method, add the following code 
+
+{% highlight java %}
+
+  SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+  editor.putString("name" , nameTxt.getText().toString());
+  editor.commit();
+
+{% endhighlight %}
+
+This uses the SharedPreferences API we talked about earlier in part 1. We get the default sharedPref and get a Editor, in which we then put the text of our nameTxt content and commit the changes.
+
+
+### 5. Getting User Image
+
+We will be getting the user image from the gallery of the phone and for that we need to use a `ACTION_GET_CONTENT` intent. Our code needs to be updated with the following new function and variables
+
+
+{% highlight java %}
+
+ // declare two new variables at the global level
+  Uri imageUri;
+  private static final int PICTURE_REQUEST_CODE = 100;
+  
+ void openPictureSelector() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select picture"), PICTURE_REQUEST_CODE );
+  }
+
+  @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case PICTURE_REQUEST_CODE: {
+                if (resultCode == RESULT_OK) {
+
+                    imageUri = data.getData();
+                    try {
+                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                        profileImg.setImageBitmap(imageBitmap);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                }
+            }
+        }
+    }
+
+{% endhighlight %}
 
 
 ## Conclusion
