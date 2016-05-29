@@ -338,10 +338,68 @@ We will be getting the user image from the gallery of the phone and for that we 
 
 {% endhighlight %}
 
+To store the image path we make a imageUri variable and make a static int variable that will be used to hold our unique code for our image pick intent. Making int for request code of intent are common practice since it improves readability rather than you simply using random integer values around your code.
+
+**OpenPictureSelector** method starts the intent to get new image. We override a method **onActivityResult** in our activity which is called when a different activity returns a result/data to the current one.
+We get the data from the resultIntent data and get the image from the Uri and set that to our imageView.
+Call the method inside the clickListener of the loadImageButton.
+
+{% highlight java %}
+
+loadImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openPictureSelector();
+            }
+        });
+{% endhighlight %}
+
+Try running the app and you clicking the update image button, after selecting a image in gallery or capturing one the image would update it inside your apps as well.
+
+### 6. Persisting image path and loading values on next launch
+
+To persist the imagePath update your onActivityResult method 'try' block with 
+
+{% highlight java %}
+  SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                        editor.putString("image" , loadImageButton.toString());
+                        editor.commit();
+{% endhighlight %}
+
+Now we have got everything working except the app doesnt load previous values we saved on launch.
+
+Time to add new method and call it in onCreate
+
+{% highlight java %}
+
+    protected void onCreate(Bundle savedInstanceState) {
+       // prev code
+       loadDetails();
+    }
+
+
+    void loadDetails() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(preferences.contains("name")) {
+            nameTxt.setText(preferences.getString("name",""));
+            imageUri = Uri.parse(preferences.getString("image", ""));
+
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                profileImg.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+{% endhighlight %}
+
+That's all we need to do, the method tries to find if our name key exist previously in pref and then set the text by retreiving value for it. We also load the imageUri and then get the bitmap from the path afterwhich it is set to the imageView.
 
 ## Conclusion
 
-**Thank you** for reading this far. For any questions you are welcome to ask in our chat room.
+**Thank you** for reading this far. Hopefully you have learned many helpful tips along the way and are now ready for your Android journey :).
+For any questions you are welcome to ask in our chat room.
 
 ## Next Steps
 
