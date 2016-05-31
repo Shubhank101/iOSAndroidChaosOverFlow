@@ -61,6 +61,7 @@ We need to setup a basic UI to actually see our firebase code in work. I am goin
  
  The TodoViewController has three labels and two textfields + a date picker in it. Pretty simple stuff.
  Make a new **TodoViewController.swift** class in your project and assign it to the VC. Then make all the textfield and date picker outlets.
+ Also add a Done/Save barbutton item in this class on which we will actually save our Todo to the firebase db. Make the appt **IBAction** for it.
  
 ## Step 3. Making the Model
 
@@ -80,6 +81,94 @@ class Todo: NSObject {
 
 
 {% endhighlight %}
+
+## Step 4. Back to understanding how Firebase works
+
+The database your app has on the firebase cloud is available on a public url like https://appname-randomIdentifer.firebaseio.com/.
+Since it is public anyone can read/write to it if the url is known. To solve this the **database rules** section is provided where you can change the access/write rights.
+
+By default firebase database require user to be authenticated before writing to the database.
+
+### Changing Database Rules
+
+In this begginer tutorial we are going to remove the authentication required to read/write from our database. Note: **You should not have this for a production app**.
+
+Go to the database section in the firebase console and change to the rules tab. Update the rules with the below and click publish.
+
+{% highlight json %}
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+{% endhighlight %}
+![Rules](http://i.imgur.com/W4a6Xjm.jpg)
+
+## Database Structure
+
+Firebase database is actually a NoSQL
+one, you won't see any tables and where clauses in it and it is therefore **a big change** for many developers out there.
+
+Our app has a simple Todo structure which arranged in a typical SQL database would look like.
+
+
+Name     | Message    | Date
+First    | Message    | 10/10/16 10:10
+
+But in **Firebase JSON syntax**, we would have to do something like this
+![Db structure](http://i.imgur.com/rGOklwM.jpg)
+
+Each todo is uniquely identified by its key which firebase creates and our todoList is actually and array for the key **todo** in our db.
+
+
+___
+
+## Coding Actual Firebase Logic
+
+### Step 5. Saving a new Todo in the Firebase Db
+
+#### Intializing Firebase in our app
+
+Open up Appdelegate.swift `didFinishLaunching` method and in it add the line
+```
+        FIRApp.configure()
+```
+Make sure to **import Firebase** in each class you use Firebase.
+
+
+Now switch to TodoViewController.swift and add a optional declaration of our todo object.
+{% highlight swift %}
+    var todo:Todo?
+{% endhighlight %}
+
+In the done IBAction add the following line of code
+
+{% highlight swift %}
+     if todo == nil {
+            todo = Todo()
+        }
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy hh:mm a"
+        
+        todo?.name = self.nameField.text
+        todo?.message = self.messageField.text
+        todo?.reminderDate = dateFormatter.stringFromDate(self.datePicker.date)
+        
+        let ref = FIRDatabase.database().reference()
+        let key = ref.child("todo").childByAutoId().key
+        
+        let dictionaryTodo = [ "name"    : todo!.name! ,
+                               "message" : todo!.message!,
+                               "date"    : todo!.reminderDate!]
+        
+        let childUpdates = ["/todo/\(key)": dictionaryTodo]
+        ref.updateChildValues(childUpdates, withCompletionBlock: { (error, ref) -> Void in
+               self.navigationController?.popViewControllerAnimated(true)
+        })
+{% endhighlight %}
+
 
 ## Conclusion
 
