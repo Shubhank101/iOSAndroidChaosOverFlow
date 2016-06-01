@@ -145,10 +145,11 @@ Now switch to TodoViewController.swift and add a optional declaration of our tod
 In the done IBAction add the following line of code
 
 {% highlight swift %}
-     if todo == nil {
+        if todo == nil {
             todo = Todo()
         }
         
+        // first section
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "dd/MM/yyyy hh:mm a"
         
@@ -156,19 +157,120 @@ In the done IBAction add the following line of code
         todo?.message = self.messageField.text
         todo?.reminderDate = dateFormatter.stringFromDate(self.datePicker.date)
         
+        //second section
         let ref = FIRDatabase.database().reference()
-        let key = ref.child("todo").childByAutoId().key
+        let key = ref.child("todoList").childByAutoId().key
         
         let dictionaryTodo = [ "name"    : todo!.name! ,
                                "message" : todo!.message!,
                                "date"    : todo!.reminderDate!]
         
-        let childUpdates = ["/todo/\(key)": dictionaryTodo]
+        let childUpdates = ["/todoList/\(key)": dictionaryTodo]
         ref.updateChildValues(childUpdates, withCompletionBlock: { (error, ref) -> Void in
                self.navigationController?.popViewControllerAnimated(true)
         })
 {% endhighlight %}
 
+Our code first section does the typical model object filling by getting the values from our outlets. You can go ahead and add validation logic here if you want. The real firebase work is done in the second section.
+
+
+In Second section , we get the database reference first and then try to get the "todoList" child in our db by calling `ref.child("todoList")`.
+Since writing to our todoList endpoint each time will just overwrite previous values, we need to get a unique key for our new todo so that we can push it for that particular key only. We call the `childByAutoId().key` on our todoList endpoint.
+
+
+Now we need to convert our model into a dictionary since Firebase cannot save custom classes. **NSString/NSArray/NSNumber and NSDictionary are the only supported types**.
+On the next line we define the childUpdate model that is for /todoList/key end point => set our dictionary object.
+Calling the updateChildValues performs the actual operation and we can pass a callback closure to detect any error that might have occured in the request.
+
+Try running the app now and click the add button in first VC -> goes to TodoViewController and in it save a new Todo. Firebase console should start showing up data that we save in the app.
+
+### Step 6. Retreiving all our Todo from the DB
+
+Firebase allow you to constantly listen to a end point for any value but in our app we only want to load data once.
+ViewController code is given below :
+{% highlight swift %}
+
+    var todoList = [Todo]()
+   
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        loadData()
+    }
+    
+    func loadData() {
+        self.todoList.removeAll()
+        let ref = FIRDatabase.database().reference()
+        ref.child("todoList").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let todoDict = snapshot.value as? [String:AnyObject] {
+                for (_,todoElement) in todoDict {
+                    print(todoElement);
+                    let todo = Todo()
+                    todo.name = todoElement["name"] as? String
+                    todo.message = todoElement["message"] as? String
+                    todo.reminderDate = todoElement["date"] as? String
+                    self.todoList.append(todo)
+                }
+            }
+            self.tableView.reloadData()
+            
+          }) { (error) in
+                print(error.localizedDescription)
+          }
+
+    }
+    
+    //MARK: TableView datasource
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.todoList.count
+    }
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("ToDoCell")
+        cell!.textLabel?.text = todoList[indexPath.row].name
+        return cell!
+    }
+
+{% endhighlight %}
+
+First we declare a array which will hold all our Todo model objects. Next we call the loadData method in our `viewWillAppear` method so that our data is refreshed everytime app is launched as well as when we come back to the view after saving a new Todo.
+In **loadData** we get the reference to our **todoList** endpoint and call the **observeSingleEventOfType** method since that observes the value event only one and is not kept in memory all the time listening for any real time changes in our end point. In the closure **snapshot.value** contains the value of that endpoint.
+
+If you observe the db in the console; each todo is uniquely identified by a key therefore in our case the snapshot.value is actually a dictionary with key value mapping. We cast it into a `[String:AnyObject]` dictionary using if let and then enumerate it. Each object contains the name,message and date of our Todo, we fill up our model with that and add it to the array. In the end we reload tableview to show the list of Todo in our UI.
+
+
+### Step 7. Viewing existing Todo
+
+We do have our todo being retrieved and the name being shown in tableview but clicking one should go to the **TodoViewController** and show all details right ? So add *didSelectRow* method in your ViewController class
+
+{% highlight swift %}
+
+func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    let todoVC = self.storyboard!.instantiateViewControllerWithIdentifier("ToDoVC") as! ToDoViewController
+    todoVC.todo = todoList[indexPath.row]
+    self.navigationController?.pushViewController(todoVC, animated: true)
+}
+
+{% endhighlight %}
+Real simple code right there. Now you need to show those details in the outlets in your TodoViewController class. Update it with the following code
+
+
+{% highlight swift %}
+override func viewDidLoad() {
+    super.viewDidLoad()
+    if self.todo != nil {
+        nameField.text = self.todo?.name
+        messageField.text = self.todo?.message
+        
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy hh:mm a"
+        let date = dateFormatter.dateFromString(self.todo!.reminderDate!)
+        datePicker.date = date!
+    }
+}
+{% endhighlight %}
+
+That's it to have our todo app functioning on our firebase database :).
 
 ## Conclusion
 
