@@ -232,7 +232,7 @@ Now switch to TodoActivity.java and get the reference of the FAB button and set 
 Our code first section does the typical model object filling by getting the values from our view object. You can go ahead and add validation logic here if you want. The real firebase work is done in the second section.
 
 
-In Second section , we get the database reference first and then try to get the "todoList" child in our db by calling 'database.getReference("todoList")`.
+In Second section , we get the database reference first and then try to get the "todoList" child in our db by calling `database.getReference("todoList")`.  
 Since writing to our todoList endpoint each time will just overwrite previous values, we need to get a unique key for our new todo so that we can push it for that particular key only. We call the `push().getKey()` on our todoList endpoint.
 
 
