@@ -20,65 +20,111 @@ We are going to use **Firebase Realtime Database** here to develop a simple To-d
 > Prerequisite : You need to have Studio with version **1.5** or higher for the services to work.
 
 Create a new Android Studio Project and name it TodoApp.
-Now note down the **bundle id**, we will need it to make the `GoogleService-Info` plist file.
+Now note down the **package name**, we will need it to make the `google-services.json` file.
 
 Head over to [Firebase console](https://console.firebase.google.com/) and click **Create New Project**. Enter TodoApp as the name project and click create project. You will be redirected to a screen like this
 
 ![Firebase Console](http://i.imgur.com/41Rq8Ij.jpg)
 
-Click Add firebase to your iOS project and in the popup - **Enter your project bundle id**
+Click Add firebase to your Android project and in the popup - **Enter your package name**
 
-![Bundle id popup](http://i.imgur.com/gwUb9E1.jpg)
+![Package popup](http://i.imgur.com/s7EuCON.jpg)
 
-Press Add app and now you will get the **GoogleService-Info.plist** downloaded automatically. Now keep pressing continue to finish the integration steps and get back to the project.
+Press Add app and now you will get the **google-services.json** downloaded automatically. Now keep pressing continue to finish the integration steps and get back to the project.
 
 
-Drag the plist you downloaded into your project root (where .xcodeProj file is). The plist file actually includes all the relevant settings for the firebase app including the firebase database url for your app.
+Drag the json you downloaded into your project root (where .build gradle file is of the app module). The json file actually includes all the relevant settings for the firebase app including the firebase database url for your app.
 
-### Setup Pods
+### Setup Gradle
 
-Open a terminal and execute **pod init** in your project directory. Open the pod file in text editor or in Xcode and add these pods to the todo target
+Open your project build.gradle file and add the following dependencies 
 
 {% highlight xml %}
 
-pod 'Firebase'
-pod 'Firebase/Database'
-
+ dependencies {
+      classpath 'com.android.tools.build:gradle:2.1.0'
+      classpath 'com.google.gms:google-services:3.0.0'
+  }
 {% endhighlight %}
 
-Run **pod install** in terminal and once completed open the **.xcworkspace** file to open the project.
+Now open your app module build.grade and add these dependencies
+{% highlight xml %}
+    compile 'com.google.firebase:firebase-core:9.0.1'
+    compile 'com.google.firebase:firebase-database:9.0.1'
+{% endhighlight %}
+
+At the end of the file we need to apply our google play servcies plugin :
+
+`apply plugin: 'com.google.gms.google-services'`
+
+Sync your gradle and you will have the firebase setup in your project.
 
 ## Step 2. Making the App UI
 
 We need to setup a basic UI to actually see our firebase code in work. I am going to explain in short here with enough details to actually carry out yourself.
 
- Embed the initial view controller in a navigation controller (this gives us the navigation stack). Now add another view controller and set its storyboard id to **ToDoVC**.
+ We will be having two activity in this project. MainActivity and TodoActivity.  
  The UI you need to make is shown in the screenshot
  
- ![App's UI](http://i.imgur.com/eN1Y4qT.jpg)
+ ![App's UI](http://i.imgur.com/iyLXjKU.jpg)
  
- The first VC has a TableView and a UIBarButtonItem in it. TableView has a dynamic prototype cell and i have given cellIdentifier as **ToDoCell**. Make sure to make the tableview outlet and set its delegate and data source to your VC class.
+ The first activity has a recycleview and a Floating action button (FAB) in it. We will fill the recycle view with our firebase todo list and the action button takes to the TodoActivity using intent.
  
- The bar button just segues to the TodoViewController (our second VC in the screen).
  
- The TodoViewController has three labels and two textfields + a date picker in it. Pretty simple stuff.
- Make a new **TodoViewController.swift** class in your project and assign it to the VC. Then make all the textfield and date picker outlets.
- Also add a Done/Save barbutton item in this class on which we will actually save our Todo to the firebase db. Make the appt **IBAction** for it.
+ The TodoActivity has three Textviews and two EditText + a date picker in it. Pretty simple stuff.
+ Make a new **TodoActivity.java** class in your project and make the appropriate layout for it. Make sure to give ids to EditText, DatePicker to access them in activity.
+ Also add a FAB in this class on which we will actually save our Todo to the firebase db. Give appt id to it
  
 ## Step 3. Making the Model
 
-Our Todo won't be a Array or Dictionary lying around here and there in a project. We will make a proper model class for it.
-Make a new **Todo.swift** in your project and replace its content with the following
+Our Todo won't be a ArrayList or Hashmap lying around here and there in a project. We will make a proper model class for it.
+Make a new **Todo.java** in your project and replace its content with the following
 
-{% highlight swift %}
-import UIKit
+{% highlight java %}
 
-class Todo: NSObject {
-    var name :String?
-    var message: String?
-    var reminderDate: String?
-    // id which is set from firebase to uniquely identify it
-    var uniqueId:String?
+ublic class Todo implements Serializable {
+
+    private String name;
+    private String message;
+    private String date;
+
+    public Todo() {
+
+    }
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+
+    public HashMap<String,String> toFirebaseObject() {
+        HashMap<String,String> todo =  new HashMap<String,String>();
+        todo.put("name", name);
+        todo.put("message", message);
+        todo.put("date", date);
+
+        return todo;
+    }
+
 }
 
 
@@ -130,146 +176,228 @@ ___
 
 ### Step 5. Saving a new Todo in the Firebase Db
 
-#### Intializing Firebase in our app
-
-Open up Appdelegate.swift `didFinishLaunching` method and in it add the line
-```
-        FIRApp.configure()
-```
-Make sure to **import Firebase** in each class you use Firebase.
 
 
-Now switch to TodoViewController.swift and add a optional declaration of our todo object.
-{% highlight swift %}
-    var todo:Todo?
-{% endhighlight %}
+Now switch to TodoActivity.java and get the reference of the FAB button and set a clicklistener to it. In it we call our **saveTodo** method.
 
-In the done IBAction add the following line of code
-
-{% highlight swift %}
-        if todo == nil {
-            todo = Todo()
+{% highlight java %}
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveTodo();
+            }
+        });
+        
+        void saveTodo() {
+            // first section
+            // get the data to save in our firebase db
+            EditText nameEdtText = (EditText)findViewById(R.id.nameEditText);
+            EditText messageEditText = (EditText)findViewById(R.id.messageEditText);
+            DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+            Date date = new Date();
+            date.setMonth(datePicker.getMonth());
+            date.setYear(datePicker.getYear());
+            date.setDate(datePicker.getDayOfMonth());
+    
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    
+            String dateString = format.format(date);
+            //make the modal object and convert it into hasmap
+    
+          
+            //second section
+            //save it to the firebase db
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            String key = database.getReference("todoList").push().getKey();
+    
+            Todo todo = new Todo();
+            todo.setName(nameEdtText.getText().toString());
+            todo.setMessage(messageEditText.getText().toString());
+            todo.setDate(dateString);
+    
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put( key, todo.toFirebaseObject());
+            database.getReference("todoList").updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+                        finish();
+                    }
+                }
+            });
         }
-        
-        // first section
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "dd/MM/yyyy hh:mm a"
-        
-        todo?.name = self.nameField.text
-        todo?.message = self.messageField.text
-        todo?.reminderDate = dateFormatter.stringFromDate(self.datePicker.date)
-        
-        //second section
-        let ref = FIRDatabase.database().reference()
-        let key = ref.child("todoList").childByAutoId().key
-        
-        let dictionaryTodo = [ "name"    : todo!.name! ,
-                               "message" : todo!.message!,
-                               "date"    : todo!.reminderDate!]
-        
-        let childUpdates = ["/todoList/\(key)": dictionaryTodo]
-        ref.updateChildValues(childUpdates, withCompletionBlock: { (error, ref) -> Void in
-               self.navigationController?.popViewControllerAnimated(true)
-        })
 {% endhighlight %}
 
-Our code first section does the typical model object filling by getting the values from our outlets. You can go ahead and add validation logic here if you want. The real firebase work is done in the second section.
+Our code first section does the typical model object filling by getting the values from our view object. You can go ahead and add validation logic here if you want. The real firebase work is done in the second section.
 
 
-In Second section , we get the database reference first and then try to get the "todoList" child in our db by calling `ref.child("todoList")`.
-Since writing to our todoList endpoint each time will just overwrite previous values, we need to get a unique key for our new todo so that we can push it for that particular key only. We call the `childByAutoId().key` on our todoList endpoint.
+In Second section , we get the database reference first and then try to get the "todoList" child in our db by calling 'database.getReference("todoList")`.
+Since writing to our todoList endpoint each time will just overwrite previous values, we need to get a unique key for our new todo so that we can push it for that particular key only. We call the `push().getKey()` on our todoList endpoint.
 
 
-Now we need to convert our model into a dictionary since Firebase cannot save custom classes. **NSString/NSArray/NSNumber and NSDictionary are the only supported types**.
+Now we need to convert our model into a Hashmap since Firebase cannot save custom classes. **String/ArrayList/Integer and Hashmap are the only supported types**.
 On the next line we define the childUpdate model that is for /todoList/key end point => set our dictionary object.
-Calling the updateChildValues performs the actual operation and we can pass a callback closure to detect any error that might have occured in the request.
+Calling the updateChildren performs the actual operation and we can pass a completion listener to detect any error that might have occured in the request.
 
-Try running the app now and click the add button in first VC -> goes to TodoViewController and in it save a new Todo. Firebase console should start showing up data that we save in the app.
+Try running the app now and click the FAB button in MainActivity -> goes to TodoActivity and in it save a new Todo. Firebase console should start showing up data that we save in the app.
 
 ### Step 6. Retreiving all our Todo from the DB
 
 Firebase allow you to constantly listen to a end point for any value but in our app we only want to load data once.
-ViewController code is given below :
-{% highlight swift %}
+MainActivity code is given below :
+{% highlight java %}
 
-    var todoList = [Todo]()
-   
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        loadData()
-    }
-    
-    func loadData() {
-        self.todoList.removeAll()
-        let ref = FIRDatabase.database().reference()
-        ref.child("todoList").observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let todoDict = snapshot.value as? [String:AnyObject] {
-                for (_,todoElement) in todoDict {
-                    print(todoElement);
-                    let todo = Todo()
-                    todo.name = todoElement["name"] as? String
-                    todo.message = todoElement["message"] as? String
-                    todo.reminderDate = todoElement["date"] as? String
-                    self.todoList.append(todo)
-                }
+   public class MainActivity extends AppCompatActivity {
+
+    RecycleAdapter adapter;
+    ArrayList<Todo> todoList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newIntent = new Intent(MainActivity.this,TodoActivity.class);
+                MainActivity.this.startActivity(newIntent);
             }
-            self.tableView.reloadData()
-            
-          }) { (error) in
-                print(error.localizedDescription)
-          }
+        });
 
-    }
-    
-    //MARK: TableView datasource
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.todoList.count
+        todoList = new ArrayList<>();
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.myrecycleView);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(llm);
+        adapter = new RecycleAdapter();
+        recyclerView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
     }
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ToDoCell")
-        cell!.textLabel?.text = todoList[indexPath.row].name
-        return cell!
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        database.getReference("todoList").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        todoList.clear();
+
+                        Log.w("TodoApp", "getUser:onCancelled " + dataSnapshot.toString());
+                        Log.w("TodoApp", "count = " + String.valueOf(dataSnapshot.getChildrenCount()) + " values " + dataSnapshot.getKey());
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Todo todo = data.getValue(Todo.class);
+                            todoList.add(todo);
+                        }
+
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
+                    }
+                });
     }
+
+    private class RecycleAdapter extends RecyclerView.Adapter {
+
+
+        @Override
+        public int getItemCount() {
+            return todoList.size();
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_item, parent, false);
+            SimpleItemViewHolder pvh = new SimpleItemViewHolder(v);
+            return pvh;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            SimpleItemViewHolder viewHolder = (SimpleItemViewHolder) holder;
+            viewHolder.position = position;
+            Todo todo = todoList.get(position);
+            ((SimpleItemViewHolder) holder).title.setText(todo.getName());
+        }
+
+        public final  class SimpleItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            TextView title;
+            public int position;
+            public SimpleItemViewHolder(View itemView) {
+                super(itemView);
+                itemView.setOnClickListener(this);
+                title = (TextView) itemView.findViewById(R.id.myTextView);
+            }
+
+            @Override
+            public void onClick(View view) {
+
+            }
+        }
+    }
+
+}
+
 
 {% endhighlight %}
 
-First we declare a array which will hold all our Todo model objects. Next we call the loadData method in our `viewWillAppear` method so that our data is refreshed everytime app is launched as well as when we come back to the view after saving a new Todo.
-In **loadData** we get the reference to our **todoList** endpoint and call the **observeSingleEventOfType** method since that observes the value event only one and is not kept in memory all the time listening for any real time changes in our end point. In the closure **snapshot.value** contains the value of that endpoint.
+First we declare a ArrayList which will hold all our Todo model objects. Next we call the loadData method in our `onResume` method so that our data is refreshed everytime MainActivity is launched as well as when we come back to the view after saving a new Todo.
+In **loadData** we get the reference to our **todoList** endpoint and call the **addListenerForSingleValueEvent** method since that observes the value event only one and is not kept in memory all the time listening for any real time changes in our end point. In the closure **dataSnapshot.value** contains the value of that endpoint.
 
-If you observe the db in the console; each todo is uniquely identified by a key therefore in our case the snapshot.value is actually a dictionary with key value mapping. We cast it into a `[String:AnyObject]` dictionary using if let and then enumerate it. Each object contains the name,message and date of our Todo, we fill up our model with that and add it to the array. In the end we reload tableview to show the list of Todo in our UI.
+If you observe the db in the console; each todo is uniquely identified by a key therefore in our case the snapshot.value actually contains children with as much number of Todo. If our model is a **Java Pojo** we can cast it into a `Todo` object using  **data.getValue(Todo.class);**. snapshot will contain all our todo so we enumberate its children which containe name,message and date of our Todo, we fill up our model with that and add it to the array. In the end we call our recycleview adapter **notifyDataSetChanged** to show the list of Todo in our UI.
 
 
 ### Step 7. Viewing existing Todo
 
-We do have our todo being retrieved and the name being shown in tableview but clicking one should go to the **TodoViewController** and show all details right ? So add *didSelectRow* method in your ViewController class
+We do have our todo being retrieved and the name being shown in recycleview but clicking one should go to the **TodoActivity** and show all details right ? So in the *onClick* method in your ViewHolder class
 
 {% highlight swift %}
 
-func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let todoVC = self.storyboard!.instantiateViewControllerWithIdentifier("ToDoVC") as! ToDoViewController
-    todoVC.todo = todoList[indexPath.row]
-    self.navigationController?.pushViewController(todoVC, animated: true)
+ @Override
+public void onClick(View view) {
+    Intent newIntent = new Intent(MainActivity.this,TodoActivity.class);
+    newIntent.putExtra("todo", todoList.get(position));
+    MainActivity.this.startActivity(newIntent);
 }
 
 {% endhighlight %}
-Real simple code right there. Now you need to show those details in the outlets in your TodoViewController class. Update it with the following code
-
+Real simple code right there. Now you need to show those details in the outlets in your TodoActivity class. Update its **onCreate** with the following code
 
 {% highlight swift %}
-override func viewDidLoad() {
-    super.viewDidLoad()
-    if self.todo != nil {
-        nameField.text = self.todo?.name
-        messageField.text = self.todo?.message
-        
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "dd/MM/yyyy hh:mm a"
-        let date = dateFormatter.dateFromString(self.todo!.reminderDate!)
-        datePicker.date = date!
-    }
-}
+ // previous onCreate code
+ if (getIntent().getExtras() != null) {
+      Bundle extras = getIntent().getExtras();
+      Todo todo = (Todo)extras.get("todo");
+      if (todo != null) {
+          EditText nameEdtText = (EditText)findViewById(R.id.nameEditText);
+          EditText messageEditText = (EditText)findViewById(R.id.messageEditText);
+          DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
+
+          nameEdtText.setText(todo.getName());
+          messageEditText.setText(todo.getMessage());
+
+          SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+          try {
+              Date date = format.parse(todo.getDate());
+              datePicker.updateDate(date.getYear(), date.getMonth(), date.getDate());
+          } catch (ParseException e) {
+              e.printStackTrace();
+          }
+      }
+ }
+ 
 {% endhighlight %}
 
 That's it to have our todo app functioning on our firebase database :).
