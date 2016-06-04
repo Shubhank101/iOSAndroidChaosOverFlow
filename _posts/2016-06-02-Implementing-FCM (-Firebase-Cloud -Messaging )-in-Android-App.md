@@ -100,7 +100,7 @@ We get the token from the FirebaseInstanceId instance and just log it currently 
 For our TokenService to actually work we need to make sure it is added to our **AndroidManifest.xml** file.
 Open up the manifest and inside our **application** tag add the service lines
 
-{% highlight java %}
+{% highlight xml %}
   <service
         android:name=".TokenService">
         <intent-filter>
@@ -128,27 +128,71 @@ After filling the title and token, scroll down and click Send Message. You will 
 
 ### Step 5. Creating our FCMMessageReceiverService
 
+Well our app is able to receive notifications and show in our app but in actual we don't have any code in our app that actually does the part of displaying the notification. This can be tested by doing **step 4** with app in foreground, you won't see the notification with app in foreground.
 
-### let and var
-Swift focuses majorly on let and var variables. 
-variables defined using let are constant and cannot be changed once a value is initalized to them while the var can be changed later on.  
-This introduces a focus on making the code secure with correct usage of constant variable from the start, therefore no bugs later on.
+This is a feature of Firebase; it shows the notification automatically if the app is in background. However if the app is in foreground, we have to extend **FirebaseMessagingService**.
 
-### Array
-Array are defined using the square brackets []. Here we pass few values to initalize it.
-Each value can be accessed using its **index**.
+This class has a method **onMessageReceived** which is called when a FCM is received in foreground. Create a new class in your project and name it **FCMMessageReceiverService**.
 
-### Dictionary
-Dictionary is a **key value object** and is used when the data has to be fetched key based.  
-Common example is for a user, you dont want to have user name at 0 index, birthday at 1. This is problematic and confusing.  
-What you want is username key to have the name value and user_birthday to have the birthday value. Something like :
+Here is our implementation :
 
-{% highlight swift %}
-let userDict = ["username":"Shubhank", "birthday":"unknown"]
+{% highlight java %}
+
+public class FCMMessageReceiverService extends FirebaseMessagingService {
+
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        Log.w("fcm", "received notification");
+        sendNotification(remoteMessage.getNotification().getTitle());
+    }
+
+    private void sendNotification(String messageBody) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(messageBody)
+                .setAutoCancel(false)
+                .setSound(defaultSoundUri);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(1, notificationBuilder.build());
+    }
+
+}
+
+{% endhighlight %}
+
+We override onMessageReceived and call the `sendNotification` method with the FCM title. The notification method simply creates a Notification and show it.
+
+
+### Step 6. Registering our message service in manifest
+
+Just like TokenService our FCMMessageReceiverService needs to be registered in manifest too so that it is visible and can be called by Firebase. Update your manifest application tag with
+
+{% highlight xml %}
+   <service
+        android:name=".FCMMessageReceiverService">
+        <intent-filter>
+              <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+  </service>
 {% endhighlight %}
 
 
-Go Ahead and check the playground to see all this live. We have added comments there for you to understand along.
+#### Testing our push notification once again
+
+Go Ahead and do the **Step 4** again with app in foreground. You will see the logcat show the message *received notification* as well as the notification appear in the notification panel.
+
+![Notification Message in Device](http://i.imgur.com/XFt3z28.jpg)
 
 ## Conclusion
 
