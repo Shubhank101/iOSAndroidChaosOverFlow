@@ -111,6 +111,24 @@ Open up the manifest and inside our **application** tag add the service lines
 
 Run the app and you should see the token in Logcat.
 
+![Token in Logcat](http://i.imgur.com/o2oICrI.jpg)
+
+### Step 4. Testing A Push notification through the Notification Console
+
+This was really easy right. You can now use Notification Console to start sending push notification to your app. Go to the notification console as shown in the following pics
+
+> **Note: For the notification to show make sure the app is in background and not in foreground**
+
+![Notification Console](http://i.imgur.com/4Av4hyj.jpg)
+![Compose Message](http://i.imgur.com/kc0UhSP.jpg)
+
+In the second screenshot, you can set the Title and also send messages based on filter like all devices/groups/particular device, adjust time for your notification. We will use the **Single device** and use the token we got in #step 3 of our tutorial.
+
+After filling the title and token, scroll down and click Send Message. You will see the notification show up in your device notification panel.
+
+### Step 5. Creating our FCMMessageReceiverService
+
+
 ### let and var
 Swift focuses majorly on let and var variables. 
 variables defined using let are constant and cannot be changed once a value is initalized to them while the var can be changed later on.  
