@@ -35,3 +35,8 @@ comments :
       colorscheme: light
     duoshuo :
       short_name : Admin
+      
+gems:
+  - jekyll-sitemap
+
+      
