@@ -4,7 +4,7 @@ email: your-email@domain.com
 description: >
   iOS Android ChaosOverFlow Chat room site. Source for iOS and Android beginner tutorials.
 baseurl: "/iOSAndroidChaosOverFlow"
-url: "http://shubhankgupta.me"
+url: "http://shubhank101.github.io"
 fixedNav: 'true' # true or false
 theme: grey # green, blue, orange, purple, grey
 twitterUsername: 
