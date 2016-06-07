@@ -2,7 +2,7 @@
 title: iOS/Android [ChaosOverFlow]
 email: your-email@domain.com
 description: >
-  iOS Android ChaosOverFlow Chat room site.
+  iOS Android ChaosOverFlow Chat room site. Source for iOS and Android beginner tutorials.
 baseurl: "/iOSAndroidChaosOverFlow"
 url: "http://shubhankgupta.me"
 fixedNav: 'true' # true or false
