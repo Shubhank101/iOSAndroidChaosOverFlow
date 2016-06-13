@@ -17,9 +17,8 @@ title: iOS Android ChaosOverFlow!
 6) Please use a non-generic display image if you intend to hang around in the chat. The plain simple SO avatars for profile is boring and confusing when 10 of you are talking in the room.
 
 <p align="center">
-  <img src="http://i.imgur.com/xDtK8B8.gif" width="320" height="320" />
+  <img src="http://i.imgur.com/JslhUOA.gif" width="320" height="320" />
 </p>
-![Happy gif](http://i.imgur.com/JslhUOA.gif)
 
 ### Guidelines 
 
