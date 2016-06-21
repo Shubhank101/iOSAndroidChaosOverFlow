@@ -1,6 +1,7 @@
 ---
 layout: post
 category : lessons
+comments: true
 tagline: "Hello world"
 tags : [intro, beginner, swift, tutorial]
 ---
