@@ -29,19 +29,76 @@ ___
 
 Before progressing to code and FCM working for push notification, we should do a little review of how push notification works.
 
-Apple Push Notification Service (APNS) is responsible for managing devices and sending message to them. We can send our push notification payload to the APNS server with the device token and it takes care of scheduling the message as well as success/failure rate.  
+**Apple Push Notification Service (APNS)** is responsible for managing devices and sending message to them. We can send our push notification payload to the APNS server with the device token and it takes care of scheduling the message as well as success/failure rate.  
 Each device is **uniquely identified by its device token**. Further, an app require user to grant the permission to send push notification to user device. If the user declines - you won't get a device token and therefore can't target the user.
 
+___
 
-### Step 1. Setting up the Xcode project
+## Step 1. Asking Permission for push notifications
+
+Create a new Xcode Project and name it **FCM_Tutorial**.
+
+Now note down the **bundle id** and store it in a separate place, we will need it to make the `GoogleService-Info` plist file later when we add Firebase to our app.
+
+To get the device token - we need to ask user permission for sending alert, banner and/or sound push.
+
+![Push Notif](http://i.imgur.com/j02xEHm.png?1)
+
+If user allow, the device will contact the APNS server and a push notification will be passed on to the App delegate function **didRegisterForDeviceToken**.
+Any error if occured is received in the function **didFailtoregister**
+
+Update your AppDelegate's `didFinishLaunchingWithOptions` method with the following code
+
+{% highlight swift %}
+
+func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+     // Override point for customization after application launch.
+     
+     let notificationTypes: UIUserNotificationType = [UIUserNotificationType.Alert, UIUserNotificationType.Badge, UIUserNotificationType.Sound]
+     
+     let notificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
+     application.registerUserNotificationSettings(notificationSettings)
+     
+     return true
+ }
+ 
+We create an array defining the types of notification we need and then call `registerUserNotificationSettings` so that the OS ask for the permission from the user.
+
+{% endhighlight %}
+
+**You cannot test push notification on simulator so make sure to have a apple dev account and a device**
+
+## Step 2. Creating App certificate and provisioning
+
+#### What they are and why are they needed
+
+You must already be knowing that to run app on devices - we need to have provisioning profile with the device udid added in it.
+To send push notifications we also need to create separate push certificate and upload the **.pem** or **.p12** file on our server. Firebase require you to upload the .p12 file.
+
+
+
+#### Simple Way - Let Xcode create it
+
+Xcode 7 has the option to automatically create provisioning profile and certificates for you.
+
+Go to preferences in Xcode and Add your apple developer account if not already added.
+![Xcode Account](http://i.imgur.com/pMjxOuA.png)
+
+Next up is to set the team in Xcode. This will make Xcode use the appt. apple account to create the app id and provisioning for our app.  
+Here is a screenshot which shows where to set the team
+
+![Set Team](http://i.imgur.com/TeUQS9d.jpg)
+
+Then head over to **Capabilities** tab in your target and Enable Push Notifications
+![Capabilities](http://i.imgur.com/KPRpA2d.jpg)
+
+Xcode will now register your app id and enable the push certificates for you.
+
+### Step 3. Adding Firebase to your project
 
 > Prerequisite : You need to have Xcode 7.3 or higher for the FCM to work.
 
-Create a new Xcode Project and name it FCM_Tutorial.
-
-Now note down the **bundle id**, we will need it to make the `GoogleService-Info` plist file.
-
-Head over to [Firebase console](https://console.firebase.google.com/) and click **Create New Project**. Enter TodoApp as the name project and click create project. You will be redirected to a screen like this
+Head over to [Firebase console](https://console.firebase.google.com/) and click **Create New Project**. Enter FCM_Tutorial as the name project and click create project. You will be redirected to a screen like this
 
 ![Firebase Console](http://i.imgur.com/41Rq8Ij.jpg)
 
@@ -66,31 +123,6 @@ pod 'Firebase/Database'
 {% endhighlight %}
 
 Run **pod install** in terminal and once completed open the **.xcworkspace** file to open the project.
-
-
-### Step 2. Asking Permission for push notifications
-
-To get the device token - we need to ask user permission for sending alert, banner and/or sound push.
-
-![Push Notif](https://s3.amazonaws.com/sensortower-itunes/blog/0074-coc-push-notification-1.jpg)
-
-If user allow, the device will contact the APNS server and a push notification will be passed on to the App delegate function **didRegisterForDeviceToken**.
-Any error if occured is received in the function **didFailtoregister**
-
-**You cannot test push notification on simulator so make sure to have a apple dev account and a device**
-
-### Step 3. Creating App certificate and provisioning
-
-#### What they are and why are they needed
-
-You must already be knowing that to run app on devices - we need to have provisioning profile with the device udid added in it.
-To send push notifications we also need to create separate push certificate and upload the **.pem** or **.p12** file on our server. Firebase require you to upload the .p12 file.
-
-
-
-#### Simple Way - Let Xcode create it
-
-Xcode 7 has the option to automatically create provisioning profile and certificates for you.
 
 
 **In progress**
