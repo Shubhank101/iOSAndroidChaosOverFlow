@@ -101,7 +101,9 @@ Any error if occured is received in the function <strong>didFailtoregister</stro
 
 <p><strong>You cannot test push notification on simulator so make sure to have a apple dev account and a device</strong></p>
 
-<h3 id="step-2-adding-firebase-to-your-project">Step 2. Adding Firebase to your project</h3>
+<hr />
+
+<h2 id="step-2-adding-firebase-to-your-project">Step 2. Adding Firebase to your project</h2>
 
 <blockquote>
   <p>Prerequisite : You need to have Xcode 7.3 or higher for the FCM to work.</p>
@@ -136,7 +138,9 @@ pod 'Firebase/Messaging'</code></pre></figure>
 </code>
 Make sure to <strong>import Firebase</strong> in each class you use Firebase.</p>
 
-<h3 id="step-3-implementing-token-registeration-methods">Step 3. Implementing token registeration methods</h3>
+<hr />
+
+<h2 id="step-3-implementing-token-registeration-methods">Step 3. Implementing token registeration methods</h2>
 
 <figure class="highlight"><pre><code class="language-swift" data-lang="swift">    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span>
                      <span class="n">didRegisterForRemoteNotificationsWithDeviceToken</span> <span class="nv">deviceToken</span><span class="p">:</span> <span class="kt">NSData</span><span class="p">)</span> <span class="p">{</span>
@@ -244,7 +248,9 @@ Save the .p12 file now in a safe place and skip setting a password for the expor
 <p>Go to the provisioning center and create a new/edit development provisioning profile <strong>(make sure it has your development device udid)</strong> for your app and download it.<br />
 Open it up in your xcode and set it as the Development provisioning profile in <strong>Build Settings</strong></p>
 
-<h3 id="step-5-testing-push-using-firebase-console">Step 5. Testing push using Firebase Console</h3>
+<hr />
+
+<h2 id="step-5-testing-push-using-firebase-console">Step 5. Testing push using Firebase Console</h2>
 
 <p>Time to test the push feature finally after all this setup :)</p>
 
@@ -262,6 +268,8 @@ Open it up in your xcode and set it as the Development provisioning profile in <
 <figure class="highlight"><pre><code class="language-swift" data-lang="swift">         <span class="nf">print</span><span class="p">(</span><span class="kt">FIRInstanceID</span><span class="o">.</span><span class="nf">instanceID</span><span class="p">()</span><span class="o">.</span><span class="nf">token</span><span class="p">())</span></code></pre></figure>
 
 <p>On the lock screen - you should see the app icon with the title <code class="highlighter-rouge">FIRST FCM MESSAGE</code></p>
+
+<hr />
 
 <h2 id="other-things-to-keep-in-mind">Other Things to Keep in Mind</h2>
 
