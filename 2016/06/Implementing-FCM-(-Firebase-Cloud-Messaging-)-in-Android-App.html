@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="t-grey">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Implementing Fcm ( Firebase Cloud  Messaging ) In Android App</title>
+  <meta name="description" content="  The final project is available for download from the Github repository">
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono:400,500' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/iOSAndroidChaosOverFlow/css/main.css">
+  <link rel="canonical" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/06/Implementing-FCM-(-Firebase-Cloud-Messaging-)-in-Android-App">
+  <link rel="alternate" type="application/rss+xml" title="iOS/Android [ChaosOverFlow]" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/feed.xml">
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+    ga('create', 'UA-78888527-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  
+</head>
+
+  <body>
+    <nav class="c-navigation is-fixed">
+  <div class="c-navigation__container u-container">
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/">Home</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/tutorials/">Tutorial</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/about/">About</a>
+  </div>
+</nav>
+
+
+    <article class="c-article">
+  <header class="c-header c-article__header">
+    <div class="u-container">
+      <h1 class="c-header__title">Implementing Fcm ( Firebase Cloud  Messaging ) In Android App</h1>
+    </div>
+  </header>
+
+  <div class="c-article__main">
+    <blockquote>
+  <p>The final project is available for download from the <a href="https://github.com/Shubhank101/iOSAndroidChaosOverFlow-Projects">Github repository</a></p>
+</blockquote>
+
+<h2 id="what-is-fcm">What is FCM?</h2>
+
+<p><strong>FCM (Firebase Cloud Messaging)</strong> replaces Google Cloud Messaging (GCM) as the API to send/receive push notifications from.<br />
+Most of the popular apps in the market uses push notifications to engage the user and i am sure you are interested to implement them in your app too so follow along.</p>
+
+<h3 id="how-does-fcm-work">How does FCM work</h3>
+
+<p><img src="https://firebase.google.com/docs/cloud-messaging/images/messaging-overview.png" alt="FCM Diagram" /></p>
+
+<p>As shown in the figure, the FCM is the middle ware between your device and the server.<br />
+You send the message you want to send to the devices to the Firebase server and it redirects it to the appropriate device. It handles all the middle ware part like scheduling notification time, failure and success rate, unique device tokens etc.</p>
+
+<p>We can use a http/xmpp server to send the message to the FCM server but in our tutorial we use the handy tool provided by the FCM guys - <strong>Notification console</strong>.</p>
+
+<h3 id="step-1-setting-up-the-android-project">Step 1. Setting up the Android project</h3>
+
+<blockquote>
+  <p>Prerequisite : You need to have Studio with version <strong>1.5</strong> or higher for the services to work.</p>
+</blockquote>
+
+<p>Create a new Android Studio Project and name it FCM_Tutorial.
+Now note down the <strong>package name</strong>, we will need it to make the <code class="highlighter-rouge">google-services.json</code> file.</p>
+
+<p>Head over to <a href="https://console.firebase.google.com/">Firebase console</a> and click <strong>Create New Project</strong>. Enter FCM_Tutorial as the name project and click create project. You will be redirected to a screen like this</p>
+
+<p><img src="http://i.imgur.com/41Rq8Ij.jpg" alt="Firebase Console" /></p>
+
+<p>Click Add firebase to your Android project and in the popup - <strong>Enter your package name</strong></p>
+
+<p><img src="http://i.imgur.com/s7EuCON.jpg" alt="Package popup" /></p>
+
+<p>Press Add app and now you will get the <strong>google-services.json</strong> downloaded automatically. Now keep pressing continue to finish the integration steps and get back to the project.</p>
+
+<p>Drag the json you downloaded into your project root (where .build gradle file is of the app module). The json file actually includes all the relevant settings for the firebase app including the firebase database url for your app.</p>
+
+<h3 id="setup-gradle">Setup Gradle</h3>
+
+<p>Open your project build.gradle file and add the following dependencies</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"> dependencies {
+      classpath 'com.android.tools.build:gradle:2.1.0'
+      classpath 'com.google.gms:google-services:3.0.0'
+  }</code></pre></figure>
+
+<p>Now open your app module build.grade and add these dependencies</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">    compile 'com.google.firebase:firebase-core:9.0.1'
+    compile 'com.google.firebase:firebase-messaging:9.0.1'</code></pre></figure>
+
+<p>At the end of the file we need to apply our google play servcies plugin :</p>
+
+<p><code class="highlighter-rouge">apply plugin: 'com.google.gms.google-services'</code></p>
+
+<p>Sync your gradle and you will have the firebase setup in your project.</p>
+
+<h3 id="step-2-creating-our-tokenservice">Step 2. Creating our TokenService</h3>
+
+<p>Each device need to be uniquely identified so that we can check success/failure and target individual user. Firebase provides <strong>FirebaseInstanceId</strong> class which takes care of creating unique device token for the current device.<br />
+The token is refreshed randomly based on duration or other things so to avoid checking each time for new token, We have to use a Service class that extends <strong>FirebaseInstanceIdService</strong>.<br />
+In it, the <strong>onTokenRefresh</strong> is called each time a new token is generated.</p>
+
+<p>So it’s time to create a new class in our project. Name it <strong>TokenService.java</strong> and have it extend <strong>FirebaseInstanceIdService</strong>. Here is our implementation</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">    
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TokenService</span> <span class="kd">extends</span> <span class="n">FirebaseInstanceIdService</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onTokenRefresh</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Get updated InstanceID token.</span>
+        <span class="n">String</span> <span class="n">refreshedToken</span> <span class="o">=</span> <span class="n">FirebaseInstanceId</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">getToken</span><span class="o">();</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="s">"notification"</span><span class="o">,</span> <span class="n">refreshedToken</span><span class="o">);</span>
+        <span class="n">sendRegistrationToServer</span><span class="o">(</span><span class="n">refreshedToken</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="n">sendRegistrationToServer</span><span class="o">(</span><span class="n">String</span> <span class="n">token</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>We get the token from the FirebaseInstanceId instance and just log it currently to the logcat so that we can use it later. You can send it to server in a production app to store it in your db.</p>
+
+<h3 id="step-3-registering-our-service-in-manifest">Step 3. Registering our service in manifest</h3>
+
+<p>For our TokenService to actually work we need to make sure it is added to our <strong>AndroidManifest.xml</strong> file.
+Open up the manifest and inside our <strong>application</strong> tag add the service lines</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">  <span class="nt">&lt;service</span>
+        <span class="na">android:name=</span><span class="s">".TokenService"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;intent-filter&gt;</span>
+            <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">"com.google.firebase.INSTANCE_ID_EVENT"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/intent-filter&gt;</span>
+   <span class="nt">&lt;/service&gt;</span></code></pre></figure>
+
+<p>Run the app and you should see the token in Logcat.</p>
+
+<p><img src="http://i.imgur.com/o2oICrI.jpg" alt="Token in Logcat" /></p>
+
+<h3 id="step-4-testing-a-push-notification-through-the-notification-console">Step 4. Testing A Push notification through the Notification Console</h3>
+
+<p>This was really easy right. You can now use Notification Console to start sending push notification to your app. Go to the notification console as shown in the following pics</p>
+
+<blockquote>
+  <p><strong>Note: For the notification to show make sure the app is in background and not in foreground</strong></p>
+</blockquote>
+
+<p><img src="http://i.imgur.com/4Av4hyj.jpg" alt="Notification Console" />
+<img src="http://i.imgur.com/kc0UhSP.jpg" alt="Compose Message" /></p>
+
+<p>In the second screenshot, you can set the Title and also send messages based on filter like all devices/groups/particular device, adjust time for your notification. We will use the <strong>Single device</strong> and use the token we got in #step 3 of our tutorial.</p>
+
+<p>After filling the title and token, scroll down and click Send Message. You will see the notification show up in your device notification panel.</p>
+
+<h3 id="step-5-creating-our-fcmmessagereceiverservice">Step 5. Creating our FCMMessageReceiverService</h3>
+
+<p>Well our app is able to receive notifications and show in our app but in actual we don’t have any code in our app that actually does the part of displaying the notification. This can be tested by doing <strong>step 4</strong> with app in foreground, you won’t see the notification with app in foreground.</p>
+
+<p>This is a feature of Firebase; it shows the notification automatically if the app is in background. However if the app is in foreground, we have to extend <strong>FirebaseMessagingService</strong>.</p>
+
+<p>This class has a method <strong>onMessageReceived</strong> which is called when a FCM is received in foreground. Create a new class in your project and name it <strong>FCMMessageReceiverService</strong>.</p>
+
+<p>Here is our implementation :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FCMMessageReceiverService</span> <span class="kd">extends</span> <span class="n">FirebaseMessagingService</span> <span class="o">{</span>
+
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="n">onMessageReceived</span><span class="o">(</span><span class="n">RemoteMessage</span> <span class="n">remoteMessage</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="n">Log</span><span class="o">.</span><span class="na">w</span><span class="o">(</span><span class="s">"fcm"</span><span class="o">,</span> <span class="s">"received notification"</span><span class="o">);</span>
+        <span class="n">sendNotification</span><span class="o">(</span><span class="n">remoteMessage</span><span class="o">.</span><span class="na">getNotification</span><span class="o">().</span><span class="na">getTitle</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">void</span> <span class="n">sendNotification</span><span class="o">(</span><span class="n">String</span> <span class="n">messageBody</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">MainActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">intent</span><span class="o">.</span><span class="na">addFlags</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">FLAG_ACTIVITY_CLEAR_TOP</span><span class="o">);</span>
+        <span class="n">PendingIntent</span> <span class="n">pendingIntent</span> <span class="o">=</span> <span class="n">PendingIntent</span><span class="o">.</span><span class="na">getActivity</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="mi">0</span> <span class="o">,</span> <span class="n">intent</span><span class="o">,</span>
+                <span class="n">PendingIntent</span><span class="o">.</span><span class="na">FLAG_ONE_SHOT</span><span class="o">);</span>
+
+        <span class="n">Uri</span> <span class="n">defaultSoundUri</span><span class="o">=</span> <span class="n">RingtoneManager</span><span class="o">.</span><span class="na">getDefaultUri</span><span class="o">(</span><span class="n">RingtoneManager</span><span class="o">.</span><span class="na">TYPE_NOTIFICATION</span><span class="o">);</span>
+        <span class="n">NotificationCompat</span><span class="o">.</span><span class="na">Builder</span> <span class="n">notificationBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NotificationCompat</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="k">this</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">setSmallIcon</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">mipmap</span><span class="o">.</span><span class="na">ic_launcher</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">setContentTitle</span><span class="o">(</span><span class="n">messageBody</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">setAutoCancel</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">setSound</span><span class="o">(</span><span class="n">defaultSoundUri</span><span class="o">);</span>
+
+        <span class="n">NotificationManager</span> <span class="n">notificationManager</span> <span class="o">=</span>
+                <span class="o">(</span><span class="n">NotificationManager</span><span class="o">)</span> <span class="n">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">NOTIFICATION_SERVICE</span><span class="o">);</span>
+
+        <span class="n">notificationManager</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">notificationBuilder</span><span class="o">.</span><span class="na">build</span><span class="o">());</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>We override onMessageReceived and call the <code class="highlighter-rouge">sendNotification</code> method with the FCM title. The notification method simply creates a Notification and show it.</p>
+
+<h3 id="step-6-registering-our-message-service-in-manifest">Step 6. Registering our message service in manifest</h3>
+
+<p>Just like TokenService our FCMMessageReceiverService needs to be registered in manifest too so that it is visible and can be called by Firebase. Update your manifest application tag with</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">   <span class="nt">&lt;service</span>
+        <span class="na">android:name=</span><span class="s">".FCMMessageReceiverService"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;intent-filter&gt;</span>
+              <span class="nt">&lt;action</span> <span class="na">android:name=</span><span class="s">"com.google.firebase.MESSAGING_EVENT"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;/intent-filter&gt;</span>
+  <span class="nt">&lt;/service&gt;</span></code></pre></figure>
+
+<h4 id="testing-our-push-notification-once-again">Testing our push notification once again</h4>
+
+<p>Go Ahead and do the <strong>Step 4</strong> again with app in foreground. You will see the logcat show the message <em>received notification</em> as well as the notification appear in the notification panel.</p>
+
+<p><img src="http://i.imgur.com/XFt3z28.jpg" alt="Notification Message in Device" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><strong>Thank you</strong> for reading this far. For any questions you are welcome to ask in our chat room.</p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Please take a look at our other <a href="../../tutorials">tutorials</a> :)</p>
+
+
+  </div>
+<div id="disqus_thread" style="width:80%; margin-left: auto; margin-right: auto"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'chaosoverflow'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</article>
+
+
+    <footer class="c-footer">
+  <div class="u-container c-footer__container">
+    <p> &copy; iOS/Android [ChaosOverFlow] 2016 </a> </p>
+    <p>
+      Author : <a href="http://github.com/Shubhank101" > Shubhank </a> 
+      
+      
+      
+      
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

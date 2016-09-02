@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="t-grey">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How To Debug App In Xcode</title>
+  <meta name="description" content="What is Debugging?Debugging is the process of finding bugs in your apps and removing them. A bug can be considered anything from a simple semicolon error to ...">
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono:400,500' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/iOSAndroidChaosOverFlow/css/main.css">
+  <link rel="canonical" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/05/how-to-debug-app-in-xcode">
+  <link rel="alternate" type="application/rss+xml" title="iOS/Android [ChaosOverFlow]" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/feed.xml">
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+    ga('create', 'UA-78888527-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  
+</head>
+
+  <body>
+    <nav class="c-navigation is-fixed">
+  <div class="c-navigation__container u-container">
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/">Home</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/tutorials/">Tutorial</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/about/">About</a>
+  </div>
+</nav>
+
+
+    <article class="c-article">
+  <header class="c-header c-article__header">
+    <div class="u-container">
+      <h1 class="c-header__title">How To Debug App In Xcode</h1>
+    </div>
+  </header>
+
+  <div class="c-article__main">
+    <h2 id="what-is-debugging">What is Debugging?</h2>
+<p>Debugging is the <em>process of finding bugs in your apps and removing them</em>. A bug can be considered anything from a simple semicolon error to a whole logical mistake in your code.</p>
+
+<h3 id="why-do-you-need-to-learn-debugging">Why do you need to learn debugging</h3>
+<p>It is a known fact that every developer spends more time figuring out why things aren’t working in their code rather than developing it.<br />
+If you learn the art of debugging, you will be able to considerably reduce your time spent on fixing things… Sounds Perfect!.</p>
+
+<h2 id="lets-start">Lets Start</h2>
+
+<p>Go Ahead and download the basic project i have setup for you which we will follow along from the <a href="https://github.com/Shubhank101/iOSAndroidChaosOverFlow-Projects">github</a> repository.<br />
+Its developed in Xcode 7.3 and swift 2, so make sure to have them ready.</p>
+
+<p>The folder contains both the apps <em>to be debugged</em> and the working example for you to go through. 
+Its a really simple two view Controllers code. The first calls the itunes search api to find list of games with keyword <em>fifa</em> and the next view controller just loads the game image.</p>
+
+<hr />
+
+<h1 id="time-to-debug">Time to debug</h1>
+
+<h3 id="xcode-debugging-panel">Xcode Debugging Panel</h3>
+<p><img src="http://i.imgur.com/kGd0APL.jpg" alt="Breakpoints in Xcode" /></p>
+
+<p>I have shown the main interface provided by Xcode for debugging your app. It is divided into three parts; Debug panel, Variables panel and the Console.</p>
+
+<h3 id="debug-panel">Debug Panel</h3>
+
+<h4 id="breakpoints">Breakpoints</h4>
+<p>Breakpoint are used to break/pause your code at a certain point of condition (can be a line or a complex expression). They are extremely useful as you can pause your code and inspect the values to find any mistakes in your logic/program.</p>
+
+<ol>
+  <li><strong>Toggle Breakpoints</strong> This is a easy switch to disable all breakpoints/enable them at once.</li>
+  <li><strong>Play/Pause</strong> This button lets you pause your code at a certain time and once you are ready to continue, just press it again to continue execution.</li>
+  <li><strong>Step Over</strong> Step over is the most important and most used tool in debugging for me. What it does is process the current line of code and then stop the thread at the next line, so essentially you use it to execute and debug your code line by line.</li>
+</ol>
+
+<h3 id="variables-inspector">Variables Inspector</h3>
+<p>Variables Inspector as the name suggest allow you to check and inspect values.
+The variables are categorized by scope (auto and local).
+<strong>Primitive</strong> data types show the value right next to them while the <em>Objects</em> inner variables can be checked by using the dropdown right next to them.</p>
+
+<h3 id="console">Console</h3>
+<p>Console shows all the logs you have added in your code using <code class="highlighter-rouge">print()</code> function. Moreover you can use <strong>po &lt;varName&gt;</strong> in console to output any variable which is currently in scope (A really handy thing).</p>
+
+<hr />
+
+<h2 id="running-the-project">Running the Project</h2>
+
+<p>Open the project and press <strong>Run</strong>.<br />
+<img src="http://i.imgur.com/x5jrAlv.png" alt="First Error" />
+Well, there you go. Your first error in action.</p>
+
+<p>So how to proceed ?
+The error points to a mutating member on a immutable object. If you already know the error and its fix, just go ahead and fix it yourself. However, in case if you dont know how to fix, its time for you to Google!.</p>
+
+<h1 id="google">Google</h1>
+<p>This is the <strong>most used</strong> debugging technique used by programmers i.e Googling the error for a possible solution.<br />
+From a novice to a experienced programmer, everyone has to take help of google to find the cause of the error.</p>
+
+<p>Go ahead and copy paste <code class="highlighter-rouge">cannot use mutating member on immutable value; is a let constant</code> into google search.  <br />
+You would have seen that i removed <code class="highlighter-rouge">appList</code> from my search. Since google would try to search for the string and the possibility exist that the other sources might not have the same variable name, it is advised to remove any string from your search which might be dynamic (different to each user).</p>
+
+<h3 id="reading-result">Reading Result</h3>
+
+<p>First few results include a link to this <a href="http://stackoverflow.com/questions/32232007/immutable-value-of-array-only-has-mutating-members-named-append">Stackoverflow thread</a>.
+From the answers, you will find that</p>
+
+<blockquote>
+  <p>When you use let you cannot change or append or add new things to this variable. change <strong>let</strong> to <strong>var</strong></p>
+</blockquote>
+
+<p>Thats it. Change the declaration of <code class="highlighter-rouge">appList</code> variable from let to var and your project should run this time.</p>
+
+<hr />
+
+<p>After running, you should be seeing many rows with fifa in their title. Click any of them and you will be treated with another error.</p>
+
+<p><img src="http://i.imgur.com/gyBXWaG.jpg" alt="Next Error" /></p>
+
+<h2 id="stack-traces">Stack Traces</h2>
+
+<p>First thing to do would be searching for the <strong>SIGBART</strong> error but you will soon realise that the error is vague and you wont really be able to solve this with this less info.<br />
+You switch to stack traces this time. Stack trace is the stack of method calls that the program took to reach current function call. It helps to really see how the program logic has been executed by checking the function calls.<br />
+Luckily, in this crash, you already got the exception and the stack trace in the console.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kt">NSUnknownKeyException</span><span class="p">,</span> <span class="nv">reason</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="kt">Debug_App</span><span class="o">.</span><span class="kt">ShowImageViewController</span> <span class="mh">0x7ffb73c515d0</span><span class="o">&gt;</span> <span class="nv">setValue</span><span class="p">:</span><span class="nv">forUndefinedKey</span><span class="p">:]:</span>
+<span class="n">this</span> <span class="kd">class</span> <span class="k">is</span> <span class="n">not</span> <span class="n">key</span> <span class="n">value</span> <span class="n">coding</span><span class="o">-</span><span class="n">compliant</span> <span class="k">for</span> <span class="n">the</span> <span class="n">key</span> <span class="n">randomLabelOutlet</span><span class="o">.</span>
+<span class="o">***</span> <span class="kt">First</span> <span class="k">throw</span> <span class="n">call</span> <span class="nv">stack</span><span class="p">:</span>
+<span class="p">(</span>
+	<span class="mi">0</span>   <span class="kt">CoreFoundation</span>                      <span class="mh">0x000000010768fe65</span> <span class="n">__exceptionPreprocess</span> <span class="o">+</span> <span class="mi">165</span>
+	<span class="mi">1</span>   <span class="n">libobjc</span><span class="o">.</span><span class="kt">A</span><span class="o">.</span><span class="n">dylib</span>                     <span class="mh">0x00000001093d2deb</span> <span class="n">objc_exception_throw</span> <span class="o">+</span> <span class="mi">48</span>
+	<span class="mi">2</span>   <span class="kt">CoreFoundation</span>                      <span class="mh">0x000000010768faa9</span> <span class="o">-</span><span class="p">[</span><span class="kt">NSException</span> <span class="n">raise</span><span class="p">]</span> <span class="o">+</span> <span class="mi">9</span>
+	<span class="mi">3</span>   <span class="kt">Foundation</span>                          <span class="mh">0x0000000107a599bb</span> <span class="o">-</span><span class="p">[</span><span class="kt">NSObject</span><span class="p">(</span><span class="kt">NSKeyValueCoding</span><span class="p">)</span> <span class="nv">setValue</span><span class="p">:</span><span class="nv">forKey</span><span class="p">:]</span> <span class="o">+</span> <span class="mi">288</span>
+	<span class="mi">4</span>   <span class="kt">UIKit</span>                               <span class="mh">0x000000010803d320</span> <span class="o">-</span><span class="p">[</span><span class="kt">UIViewController</span> <span class="nv">setValue</span><span class="p">:</span><span class="nv">forKey</span><span class="p">:]</span> <span class="o">+</span> <span class="mi">88</span>
+	<span class="mi">5</span>   <span class="kt">UIKit</span>                               <span class="mh">0x000000010826bf41</span> <span class="o">-</span><span class="p">[</span><span class="kt">UIRuntimeOutletConnection</span> <span class="n">connect</span><span class="p">]</span> <span class="o">+</span> <span class="mi">109</span>
+	<span class="mi">6</span>   <span class="kt">CoreFoundation</span>                      <span class="mh">0x00000001075d04a0</span> <span class="o">-</span><span class="p">[</span><span class="kt">NSArray</span> <span class="nv">makeObjectsPerformSelector</span><span class="p">:]</span> <span class="o">+</span> <span class="mi">224</span>
+	<span class="mi">7</span>   <span class="kt">UIKit</span>                               <span class="mh">0x000000010826a924</span> <span class="o">-</span><span class="p">[</span><span class="kt">UINib</span> <span class="nv">instantiateWithOwner</span><span class="p">:</span><span class="nv">options</span><span class="p">:]</span> <span class="o">+</span> <span class="mi">1864</span>
+	<span class="mi">8</span>   <span class="kt">UIKit</span>                               <span class="mh">0x0000000108043eea</span> <span class="o">-</span><span class="p">[</span><span class="kt">UIViewController</span> <span class="nv">_loadViewFromNibNamed</span><span class="p">:</span><span class="nv">bundle</span><span class="p">:]</span> <span class="o">+</span> <span class="mi">381</span>
+	<span class="mi">9</span>   <span class="kt">UIKit</span>                               <span class="mh">0x0000000108044816</span> <span class="o">-</span><span class="p">[</span><span class="kt">UIViewController</span> <span class="n">loadView</span><span class="p">]</span> <span class="o">+</span> <span class="mi">178</span>
+	<span class="mi">10</span>  <span class="kt">UIKit</span>                               <span class="mh">0x0000000108044b74</span> <span class="o">-</span><span class="p">[</span><span class="kt">UIViewController</span> <span class="n">loadViewIfRequired</span><span class="p">]</span> <span class="o">+</span>
+  </code></pre></figure>
+
+<p>If you will read from bottom to top. you will see that <code class="highlighter-rouge">loadView</code> method is called and then during <code class="highlighter-rouge">UIRuntimeOutletConnection</code> class method a crash occurs.
+This is why stack trace is helpful as it gives you hint to proceed further by telling you the method calls that took place.
+The current exception points to <strong>class is not key value coding-compliant for the key randomLabelOutlet</strong></p>
+
+<p>With this much info, we are ready to solve this one. If you will google for the exception error, you will come across many threads that also points to some outlet connection being broken.
+To solve this, we are going to search for <code class="highlighter-rouge">randomLabelOutlet</code> in our project.
+And there it is.<br />
+<img src="http://i.imgur.com/JAqA8kC.jpg" alt="Search Result" /></p>
+
+<p><img src="http://i.imgur.com/fjRsCFg.png" alt="Broken Outlet" /></p>
+
+<p><strong>Remove the broken outlet</strong> and now clicking the first row in tableview would work in the app.</p>
+
+<hr />
+
+<h1 id="logical-errors">Logical Errors</h1>
+
+<p>These are the creepy ones and we have <strong>one</strong> in our project :D<br />
+Run the project and try clicking any of the bottom rows in the list. This time you will be faced with this
+<img src="http://i.imgur.com/Sgipdlt.jpg" alt="image url nil" /></p>
+
+<p>A simple google search will show that you need to use <strong>if let</strong> for optionals unwrapping but the point here is that why is our <strong>imageURL</strong> nil in the first place!. It definitely works for the first result of the table.</p>
+
+<h3 id="app-flow">App Flow</h3>
+<p>Here is a basic recap of what the app does. The first VC downloads the app results for the tag <strong>fifa</strong> and in the second VC we just download the image from the app icon url and set it in a imageView.</p>
+
+<h3 id="how-to-proceed">How to proceed</h3>
+
+<p>1) Set breakpoint on the <code class="highlighter-rouge">print(imageURL)</code> line
+<img src="http://i.imgur.com/iEkf9BL.png" alt="Breakpoint added" /></p>
+
+<p>Run the code and try any of the last rows in the table or the first few rows.<br />
+For the first few rows, the value in values inspector shows like</p>
+
+<p><img src="http://i.imgur.com/LaGsMzf.jpg" alt="First Image result" />
+___</p>
+
+<p>For the last few rows :
+<img src="http://i.imgur.com/NHYCYZ9.jpg" alt="Second Image result" />
+___</p>
+
+<p>2) Checking the source<br />
+As you can see image url is for some weird reason <strong>nil</strong> for the last rows.
+To solve it, we need to think back in our code and check where is the image url set from.
+Our code sets it in the <code class="highlighter-rouge">prepareForSegue</code> method in firstVC</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">       <span class="k">if</span> <span class="k">let</span> <span class="nv">destinationVC</span> <span class="o">=</span> <span class="n">segue</span><span class="o">.</span><span class="n">destinationViewController</span> <span class="k">as?</span> <span class="kt">ShowImageViewController</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">indexPath</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">indexPathForSelectedRow</span>
+            <span class="n">destinationVC</span><span class="o">.</span><span class="n">imageURL</span> <span class="o">=</span> <span class="n">appList</span><span class="p">[</span><span class="n">indexPath</span><span class="o">!.</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
+        <span class="p">}</span></code></pre></figure>
+
+<p>Seems nothing wrong here, it just get the data from the appList variable and set the url. This forces us to check if our <strong>appList</strong> variable actually contains proper data.
+Search for the appList variable and you will soon come to source</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">  <span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span><span class="n">gameDict</span><span class="p">)</span> <span class="k">in</span> <span class="n">arr</span><span class="o">.</span><span class="nf">enumerate</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">let</span> <span class="nv">model</span> <span class="o">=</span> <span class="kt">AppModel</span><span class="p">()</span>
+      <span class="n">model</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">gameDict</span><span class="p">[</span><span class="s">"trackCensoredName"</span><span class="p">]</span> <span class="k">as!</span> <span class="kt">String</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">model</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">gameDict</span><span class="p">[</span><span class="s">"artworkUrl512"</span><span class="p">]</span> <span class="k">as?</span> <span class="kt">String</span>                            
+      <span class="p">}</span>
+      <span class="k">self</span><span class="o">.</span><span class="n">appList</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+  <span class="p">}</span></code></pre></figure>
+
+<p>There it is.. you see <strong>if(index &lt;10)</strong> .. that is the culprit and removing that if condition will make this project work as it was intended to.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><strong>Thank you</strong> for reading this far. Hopefully you would have learned some helpful tips from this tutorial and are a debug ninja now.
+For any questions you are welcome to ask in our chat room.</p>
+
+<h3 id="for-further-info">For further info</h3>
+
+<p><a href="https://developer.apple.com/support/debugging/">Apple Debugging Support</a></p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Please take a look at our other <a href="../../tutorials">tutorials</a> :)</p>
+
+
+  </div>
+<div id="disqus_thread" style="width:80%; margin-left: auto; margin-right: auto"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'chaosoverflow'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</article>
+
+
+    <footer class="c-footer">
+  <div class="u-container c-footer__container">
+    <p> &copy; iOS/Android [ChaosOverFlow] 2016 </a> </p>
+    <p>
+      Author : <a href="http://github.com/Shubhank101" > Shubhank </a> 
+      
+      
+      
+      
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

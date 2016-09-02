@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="t-grey">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Push notification in ios Using fcm (swift)</title>
+  <meta name="description" content="What is FCM?">
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono:400,500' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/iOSAndroidChaosOverFlow/css/main.css">
+  <link rel="canonical" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/07/Push-Notification-in-iOS-using-FCM-(Swift)">
+  <link rel="alternate" type="application/rss+xml" title="iOS/Android [ChaosOverFlow]" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/feed.xml">
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+    ga('create', 'UA-78888527-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  
+</head>
+
+  <body>
+    <nav class="c-navigation is-fixed">
+  <div class="c-navigation__container u-container">
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/">Home</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/tutorials/">Tutorial</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/about/">About</a>
+  </div>
+</nav>
+
+
+    <article class="c-article">
+  <header class="c-header c-article__header">
+    <div class="u-container">
+      <h1 class="c-header__title">Push notification in ios Using fcm (swift)</h1>
+    </div>
+  </header>
+
+  <div class="c-article__main">
+    <h2 id="what-is-fcm">What is FCM?</h2>
+
+<p><strong>FCM (Firebase Cloud Messaging)</strong> replaces Google Cloud Messaging (GCM) as the API to send/receive push notifications from.<br />
+Most of the popular apps in the market uses push notifications to engage the user and i am sure you are interested to implement them in your app too so follow along.</p>
+
+<h3 id="how-does-fcm-work">How does FCM work</h3>
+
+<p><img src="https://firebase.google.com/docs/cloud-messaging/images/messaging-overview.png" alt="FCM Diagram" /></p>
+
+<p>As shown in the figure, the FCM is the middle ware between your device and the server.<br />
+You send the message you want to send to the devices to the Firebase server and it redirects it to the appropriate device. It handles all the middle ware part like scheduling notification time, failure and success rate, unique device tokens etc.</p>
+
+<p>We can use a http/xmpp server to send the message to the FCM server but in our tutorial we use the handy tool provided by the FCM guys - <strong>Notification console</strong>.</p>
+
+<hr />
+
+<h2 id="theory-of-how-push-notification-work-on-ios">Theory of how Push notification work on iOS</h2>
+
+<p>Before progressing to code and FCM working for push notification, we should do a little review of how push notification works.</p>
+
+<p><strong>Apple Push Notification Service (APNS)</strong> is responsible for managing devices and sending message to them. We can send our push notification payload to the APNS server with the device token and it takes care of scheduling the message as well as success/failure rate.<br />
+Each device is <strong>uniquely identified by its device token</strong>. Further, an app require user to grant the permission to send push notification to user device. If the user declines - you won’t get a device token and therefore can’t target the user.</p>
+
+<hr />
+
+<h2 id="step-1-asking-permission-for-push-notifications">Step 1. Asking Permission for push notifications</h2>
+
+<p>Create a new Xcode Project and name it <strong>FCM_Tutorial</strong>.</p>
+
+<p>Now note down the <strong>bundle id</strong> and store it in a separate place, we will need it to make the <code class="highlighter-rouge">GoogleService-Info</code> plist file later when we add Firebase to our app.</p>
+
+<p>To get the device token - we need to ask user permission for sending alert, banner and/or sound push.</p>
+
+<p><img src="http://i.imgur.com/j02xEHm.png?1" alt="Push Notif" /></p>
+
+<p>If user allow, the device will contact the APNS server and a push notification will be passed on to the App delegate function <strong>didRegisterForDeviceToken</strong>.
+Any error if occured is received in the function <strong>didFailtoregister</strong></p>
+
+<p>Update your AppDelegate’s <code class="highlighter-rouge">didFinishLaunchingWithOptions</code> method with the following code</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span> <span class="p">[</span><span class="kt">NSObject</span><span class="p">:</span> <span class="kt">AnyObject</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+     <span class="c1">// Override point for customization after application launch.</span>
+     
+     <span class="k">let</span> <span class="nv">notificationTypes</span><span class="p">:</span> <span class="kt">UIUserNotificationType</span> <span class="o">=</span> <span class="p">[</span><span class="kt">UIUserNotificationType</span><span class="o">.</span><span class="kt">Alert</span><span class="p">,</span> <span class="kt">UIUserNotificationType</span><span class="o">.</span><span class="kt">Badge</span><span class="p">,</span> <span class="kt">UIUserNotificationType</span><span class="o">.</span><span class="kt">Sound</span><span class="p">]</span>
+     
+     <span class="k">let</span> <span class="nv">notificationSettings</span> <span class="o">=</span> <span class="kt">UIUserNotificationSettings</span><span class="p">(</span><span class="nv">forTypes</span><span class="p">:</span> <span class="n">notificationTypes</span><span class="p">,</span> <span class="nv">categories</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+     <span class="n">application</span><span class="o">.</span><span class="nf">registerUserNotificationSettings</span><span class="p">(</span><span class="n">notificationSettings</span><span class="p">)</span>
+     <span class="n">application</span><span class="o">.</span><span class="nf">registerForRemoteNotifications</span><span class="p">()</span>
+     
+     <span class="k">return</span> <span class="kc">true</span>
+ <span class="p">}</span>
+ </code></pre></figure>
+
+<p>We create an array defining the types of notification we need and then call <code class="highlighter-rouge">registerUserNotificationSettings</code> so that the OS ask for the permission from the user.</p>
+
+<p><strong>You cannot test push notification on simulator so make sure to have a apple dev account and a device</strong></p>
+
+<h3 id="step-2-adding-firebase-to-your-project">Step 2. Adding Firebase to your project</h3>
+
+<blockquote>
+  <p>Prerequisite : You need to have Xcode 7.3 or higher for the FCM to work.</p>
+</blockquote>
+
+<p>Head over to <a href="https://console.firebase.google.com/">Firebase console</a> and click <strong>Create New Project</strong>. Enter FCM_Tutorial as the name project and click create project. You will be redirected to a screen like this</p>
+
+<p><img src="http://i.imgur.com/41Rq8Ij.jpg" alt="Firebase Console" /></p>
+
+<p>Click Add firebase to your iOS project and in the popup - <strong>Enter your project bundle id</strong></p>
+
+<p><img src="http://i.imgur.com/gwUb9E1.jpg" alt="Bundle id popup" /></p>
+
+<p>Press Add app and now you will get the <strong>GoogleService-Info.plist</strong> downloaded automatically. Now keep pressing continue to finish the integration steps and get back to the project.</p>
+
+<p>Drag the plist you downloaded into your project root (where .xcodeProj file is). The plist file actually includes all the relevant settings for the firebase app including the firebase database url for your app.</p>
+
+<h3 id="setup-pods">Setup Pods</h3>
+
+<p>Open a terminal and execute <strong>pod init</strong> in your project directory. Open the pod file in text editor or in Xcode and add these pods to the app target</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">pod 'Firebase/Core'
+pod 'Firebase/Messaging'</code></pre></figure>
+
+<p>Run <strong>pod install</strong> in terminal and once completed open the <strong>.xcworkspace</strong> file to open the project.</p>
+
+<h4 id="intializing-firebase-in-our-app">Intializing Firebase in our app</h4>
+
+<p>Open up Appdelegate.swift <code class="highlighter-rouge">didFinishLaunching</code> method and in it add the line
+<code class="highlighter-rouge">
+        FIRApp.configure()
+</code>
+Make sure to <strong>import Firebase</strong> in each class you use Firebase.</p>
+
+<h3 id="step-3-implementing-token-registeration-methods">Step 3. Implementing token registeration methods</h3>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span>
+                     <span class="n">didRegisterForRemoteNotificationsWithDeviceToken</span> <span class="nv">deviceToken</span><span class="p">:</span> <span class="kt">NSData</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">FIRInstanceID</span><span class="o">.</span><span class="nf">instanceID</span><span class="p">()</span><span class="o">.</span><span class="nf">setAPNSToken</span><span class="p">(</span><span class="n">deviceToken</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">FIRInstanceIDAPNSTokenType</span><span class="o">.</span><span class="kt">Sandbox</span><span class="p">)</span>
+        <span class="kt">FIRInstanceID</span><span class="o">.</span><span class="nf">instanceID</span><span class="p">()</span><span class="o">.</span><span class="nf">setAPNSToken</span><span class="p">(</span><span class="n">deviceToken</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">FIRInstanceIDAPNSTokenType</span><span class="o">.</span><span class="kt">Prod</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="kt">FIRInstanceID</span><span class="o">.</span><span class="nf">instanceID</span><span class="p">()</span><span class="o">.</span><span class="nf">token</span><span class="p">())</span>
+        <span class="k">let</span> <span class="nv">tokenChars</span> <span class="o">=</span> <span class="kt">UnsafePointer</span><span class="o">&lt;</span><span class="kt">CChar</span><span class="o">&gt;</span><span class="p">(</span><span class="n">deviceToken</span><span class="o">.</span><span class="n">bytes</span><span class="p">)</span>
+        <span class="k">var</span> <span class="nv">tokenString</span> <span class="o">=</span> <span class="s">""</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="n">deviceToken</span><span class="o">.</span><span class="n">length</span> <span class="p">{</span>
+            <span class="n">tokenString</span> <span class="o">+=</span> <span class="kt">String</span><span class="p">(</span><span class="nv">format</span><span class="p">:</span> <span class="s">"%02.2hhx"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="p">[</span><span class="n">tokenChars</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+        <span class="p">}</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"tokenString: </span><span class="se">\(</span><span class="n">tokenString</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didFailToRegisterForRemoteNotificationsWithError</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">NSError</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span>
+    </code></pre></figure>
+
+<p><strong>didRegisterForRemoteNotificationsWithDeviceToken</strong></p>
+
+<p>In this method we save the device token to our FIRInstanceID so that our unique device token is made for Firebase.</p>
+
+<p><strong>didFailToRegisterForRemoteNotificationsWithError</strong><br />
+<strong>keep a lookout</strong> for this method, every time the app fails to register for remote notification - it will show the error details here.</p>
+
+<p>If you run the app in simulator now: You will face the Notification alert shown in step 1. Clicking Allow will give a error in the logs like</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">2016-09-01 19:19:04.639: <span class="nt">&lt;FIRInstanceID</span><span class="err">/WARNING</span><span class="nt">&gt;</span> Failed to fetch APNS token Error Domain=NSCocoaErrorDomain Code=3010 "REMOTE_NOTIFICATION_SIMULATOR_NOT_SUPPORTED_NSERROR_DESCRIPTION"
+UserInfo={NSLocalizedDescription=REMOTE_NOTIFICATION_SIMULATOR_NOT_SUPPORTED_NSERROR_DESCRIPTION}</code></pre></figure>
+
+<p>Make sure to test on Device!.</p>
+
+<hr />
+
+<h2 id="step-4-creating-app-certificate-and-provisioning">Step 4. Creating App certificate and provisioning</h2>
+
+<h3 id="what-they-are-and-why-are-they-needed">What they are and why are they needed</h3>
+
+<p>You must already be knowing that to run app on devices - we need to have provisioning profile with the device udid added in it.
+To send push notifications we also need to create separate push certificate and upload the <strong>.pem</strong> or <strong>.p12</strong> file on our server. Firebase require you to upload the .p12 file.</p>
+
+<h3 id="simple-way---let-xcode-create-them">Simple way - Let Xcode create them</h3>
+
+<p>Xcode 7 has the option to automatically create provisioning profile and certificates for you.</p>
+
+<p>Go to preferences in Xcode and Add your apple developer account if not already added.
+<img src="http://i.imgur.com/pMjxOuA.png" alt="Xcode Account" /></p>
+
+<p>Next up is to set the team in Xcode. This will make Xcode use the appt. apple account to create the app id and provisioning for our app.<br />
+Here is a screenshot which shows where to set the team</p>
+
+<p><img src="http://i.imgur.com/TeUQS9d.jpg" alt="Set Team" /></p>
+
+<p>Then head over to <strong>Capabilities</strong> tab in your target and Enable Push Notifications
+<img src="http://i.imgur.com/KPRpA2d.jpg" alt="Capabilities" />
+<img src="http://i.imgur.com/NMIod1v.jpg" alt="Enabling Push" />
+Xcode will now register your app id and enable the push certificates for you.</p>
+
+<h3 id="longer-route---creating-certificate-and-provisioning-manually-for-push">Longer route - Creating certificate and provisioning manually for push</h3>
+
+<p><strong>If the easy way does not work and you don’t see the token still after running the app</strong>, you would have to take the longer route of creating provisioning and certificates using Keychain Access and Apple Developer Portal.</p>
+
+<p><em>I for personally blame Apple and Xcode for the provisioning messup :)</em></p>
+
+<p>Open up <strong>Keychain Access</strong> app by finding it in the LaunchPad.</p>
+
+<p>Select Request a Certificate from a Certificate Authority in the App Menu
+<img src="http://i.imgur.com/IYkusVJ.jpg" alt="Create a Certificate" /></p>
+
+<p>In the New Window that opens, add the email and name and then select the option to save it to disk.</p>
+
+<p><strong>Note: Make sure to enter a name which has clear purpose, It is helpful in finding out keychain key in further steps</strong></p>
+
+<p><img src="http://i.imgur.com/5YlDnda.jpg" alt="Create Certificate Dialog" /></p>
+
+<p>Save the certificate to a place where you can locate it later on.</p>
+
+<p>Now proceed to <a href="http://developer.apple.com">Developer Center</a> and login into your account.<br />
+In the App Id section - click on your app till you reach a similar screen with Edit button</p>
+
+<p><img src="http://i.imgur.com/2JH0fVt.jpg" alt="Edit App id" />
+Click Edit and Scroll down to the Push certificate section
+<strong>Create a Development SSL certificate as shown in the image</strong></p>
+
+<p><img src="http://i.imgur.com/19pFIxj.jpg" alt="Create Push Certificate for App Id" /></p>
+
+<p>Click Continue in the below screen
+<img src="http://i.imgur.com/8oypmGx.jpg" alt="Create Certificate" /></p>
+
+<p>Select the certificate where you saved it
+<img src="http://i.imgur.com/WhGsPG4.jpg" alt="Create Certificate" /></p>
+
+<p>Download the aps certificate created and double click it so that it is added to the Keychain.</p>
+
+<p><img src="http://i.imgur.com/KfoAnX2.jpg" alt="Certificate in keychain" /></p>
+
+<p><strong>Right Click the Apple Push Services Key Row and Click Export</strong>
+Save the .p12 file now in a safe place and skip setting a password for the exported file for now.</p>
+
+<h4 id="last-step-is-now-to-download-the-provisioning-profile">Last Step is now to download the provisioning profile.</h4>
+
+<p>Everytime you update the certificates for push for your app id, the provisioning profiles are required to be regenerated so that they have the entitlements set.</p>
+
+<p>Go to the provisioning center and create a new/edit development provisioning profile <strong>(make sure it has your development device udid)</strong> for your app and download it.<br />
+Open it up in your xcode and set it as the Development provisioning profile in <strong>Build Settings</strong></p>
+
+<h3 id="step-5-testing-push-using-firebase-console">Step 5. Testing push using Firebase Console</h3>
+
+<p>Time to test the push feature finally after all this setup :)</p>
+
+<p>You can now use Notification Console to start sending push notification to your app. Go to the notification console as shown in the following pics</p>
+
+<blockquote>
+  <p><strong>Note: For the notification to show make sure to kill the app after you get the token</strong></p>
+</blockquote>
+
+<p><img src="http://i.imgur.com/4Av4hyj.jpg" alt="Notification Console" />
+<img src="http://i.imgur.com/kc0UhSP.jpg" alt="Compose Message" /></p>
+
+<p>The token to use is the one printed using this line</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">         <span class="nf">print</span><span class="p">(</span><span class="kt">FIRInstanceID</span><span class="o">.</span><span class="nf">instanceID</span><span class="p">()</span><span class="o">.</span><span class="nf">token</span><span class="p">())</span></code></pre></figure>
+
+<p>On the lock screen - you should see the app icon with the title <code class="highlighter-rouge">FIRST FCM MESSAGE</code></p>
+
+<h2 id="other-things-to-keep-in-mind">Other Things to Keep in Mind</h2>
+
+<p><strong>Few important things to keep in mind before finishing up</strong></p>
+
+<p>1) iOS App while in background/foreground receives the notification in Appdelegate <strong>didReceiveRemoteNotification</strong> method. It is your resposibility to show the alert as well as any other action in this case by parsing the payload</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">  <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span> <span class="n">didReceiveRemoteNotification</span> <span class="nv">userInfo</span><span class="p">:</span> <span class="p">[</span><span class="kt">NSObject</span> <span class="p">:</span> <span class="kt">AnyObject</span><span class="p">],</span> <span class="n">fetchCompletionHandler</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">(</span><span class="kt">UIBackgroundFetchResult</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">userInfo</span><span class="p">)</span>
+    <span class="p">}</span></code></pre></figure>
+
+<p>2) <strong>App Store/Adhoc build will use the Distribution SSL Certificate for the Push certificate.</strong></p>
+
+<p>Make sure to repeat the steps above to make the distribution push certificate when submitting app to the store.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><strong>Thank you</strong> for reading this far. For any questions you are welcome to ask in our chat room.</p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Please take a look at our other <a href="../../tutorials">tutorials</a> :)</p>
+
+
+  </div>
+<div id="disqus_thread" style="width:80%; margin-left: auto; margin-right: auto"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'chaosoverflow'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</article>
+
+
+    <footer class="c-footer">
+  <div class="u-container c-footer__container">
+    <p> &copy; iOS/Android [ChaosOverFlow] 2016 </a> </p>
+    <p>
+      Author : <a href="http://github.com/Shubhank101" > Shubhank </a> 
+      
+      
+      
+      
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

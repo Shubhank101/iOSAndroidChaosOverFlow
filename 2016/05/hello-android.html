@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html class="t-grey">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello Android</title>
+  <meta name="description" content="Part 1 - Theoritical And Best practices for Android">
+
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,400italic,700|Roboto+Mono:400,500' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/iOSAndroidChaosOverFlow/css/main.css">
+  <link rel="canonical" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/05/hello-android">
+  <link rel="alternate" type="application/rss+xml" title="iOS/Android [ChaosOverFlow]" href="http://shubhank101.github.io/iOSAndroidChaosOverFlow/feed.xml">
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+    ga('create', 'UA-78888527-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+  
+</head>
+
+  <body>
+    <nav class="c-navigation is-fixed">
+  <div class="c-navigation__container u-container">
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/">Home</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/tutorials/">Tutorial</a>
+    <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/about/">About</a>
+  </div>
+</nav>
+
+
+    <article class="c-article">
+  <header class="c-header c-article__header">
+    <div class="u-container">
+      <h1 class="c-header__title">Hello Android</h1>
+    </div>
+  </header>
+
+  <div class="c-article__main">
+    <h1 id="part-1---theoritical-and-best-practices-for-android">Part 1 - Theoritical And Best practices for Android</h1>
+
+<blockquote>
+  <p>This is a general summarized version of our take on explaining Android development for you. Its by no means a complete topic that covers everything. This is to give you a good grasp of things of the framework, best practices used by us and generally a simple tutorial after which you are ready to take on any topic you are interested in Android :)</p>
+</blockquote>
+
+<h1 id="what-is-android">What is Android?</h1>
+
+<p><img src="http://i.imgur.com/jK415Ks.png" alt="Android Logo" /></p>
+
+<p>Android is a open-source operating system developed by Google released in 2008 and has gone on then to become one of the most popular OS for mobile devices.<br />
+Apps can be developed for android in many languages including java, scala, kotlin, swift and so on.</p>
+
+<h2 id="android-studio">Android Studio</h2>
+
+<p>Android Studio is the official IDE released by Google to develop android apps. Basic interface of the studio is explained below</p>
+
+<p><img src="http://i.imgur.com/wCvWxff.jpg" alt="Android Studio" /></p>
+
+<p>Why you should use android studio and not other IDE like eclipse/Intelli J etc ?</p>
+
+<ul>
+  <li>
+    <p><strong>Android Focused</strong><br />
+All the tools provided in android studio are meant to help in android projects. Huge templates support, layout editor etc are the features only provided in it.</p>
+  </li>
+  <li>
+    <p><strong>Official Support from Google</strong><br />
+Its the IDE which the google developers use and hence you can always expect it to be made better for developers each day.</p>
+  </li>
+</ul>
+
+<h2 id="android-ui-components">Android UI Components</h2>
+
+<h3 id="ui-basics">UI Basics</h3>
+
+<p>A typical Android device can be of any size and therefore you can’t simply go around thinking values in pixels. 1 pixel might be quite big in one device but very small in another. The solution is to use <strong>dpi(Device independent pixel)</strong>. Most of the time you will hear the <strong>dp</strong> term which is the same as dpi.
+So rule of thumb is to specify size in dp instead of pixels.</p>
+
+<p>Common design terminologies</p>
+
+<ol>
+  <li><strong>wrap_content</strong> : wrap content for width/height is specified when you want the layout to take as much width/height as its content.</li>
+  <li><strong>match_parent</strong> : match parent is used when you want the view to take up all space in its parent. Using match_parent does not gaurantee full space though, OS calculates the space available and if otherview take up some space, your view will get whole view space-otherviews space height/width.</li>
+</ol>
+
+<p>You define your application screen UI in xml files/graphical editor. The xml files mostly consider of using UI components provided by the framework to layout the elements on the screen. We list out the most common one used here</p>
+
+<h2 id="layouts">Layouts</h2>
+<p>Layouts are the UI component that controls the positioning and layout of their children. You can nest layout inside one another.</p>
+
+<h3 id="linearlayout">LinearLayout</h3>
+
+<p>Linearlayout is a commonly used layout to (as the name suggests) lay the children UI Views linearly either in a horizontal stack or a vertical.</p>
+
+<p><img src="http://i.imgur.com/B4lFtoh.jpg" alt="Linear Layout" /></p>
+
+<h3 id="relativelayout">RelativeLayout</h3>
+
+<p>RelativeLayout lay it children in relation to one another or to itself. You can use <code class="highlighter-rouge">alignParentLeft</code> to make the view position at top-left and <code class="highlighter-rouge">alignCenterInParent</code> to make view center in the whole layout.</p>
+
+<p><img src="http://i.imgur.com/NOoZprc.jpg" alt="Relative Layout" /></p>
+
+<h3 id="framelayout">FrameLayout</h3>
+
+<p>FrameLayout works on the z axis/order basis. Other layouts do not allow you to specify views overlapping one another however frame layout does.</p>
+
+<p><img src="http://i.imgur.com/lw3vr7p.jpg" alt="Frame Layout" /></p>
+
+<p>There are more layouts waiting to be explored like DrawerLayout, GridLayout etc but they are specific and we are not explaining them here for now. The above explained layouts are the most commonly used to design any complex UI screen you wish.</p>
+
+<h2 id="activity">Activity</h2>
+
+<p>Activity are the basic individual screen component in Android. When you launch an app, you basically open one of its screen and that is an <em>Activity</em>. Its basically the <strong>controller</strong> part in an MVC app.</p>
+
+<h2 id="fragments">Fragments</h2>
+
+<p>Fragments are the middleware between the controller and the view in a MVC model. Main difference b/w fragment and activity is that fragment needs to be hosted in a activity therefore they do not exist on their own. They always need to be added to an activity’s view to be shown.</p>
+
+<h3 id="which-one-to-use-and-when">Which one to use and when</h3>
+
+<p>1) Well there has to be one activity at least in your app, otherwise no UI screen can be launched.<br />
+2) Now, do you want the view you are designing to be launched individually or do you want everytime user to go from A-&gt;B. If you want B be to be allowed to launch individually : it needs to be an activity.<br />
+3) Are you making a resuable view?  Well not exactly a view but a <strong>wrapper</strong> that shows a particular view and act as its controller : <strong>if yes, go for a fragment</strong>.</p>
+
+<h2 id="intent">Intent</h2>
+<p>Intent is used to communicate with other activities within the OS or within the app itself. They are at the core of the android framework. If you want to launch browser app - just create a new intent specifiying its package. If you want to open another activity of your app - create another and set the activity class and just launch the intent.</p>
+
+<h2 id="manifest">Manifest</h2>
+
+<p>Manifest is the file that describes how your app appear to the OS and in the play store. It contains certain terms that define app features, descriptions, list of activities etc.<br />
+App’s manifest includes these</p>
+
+<ul>
+  <li><strong>App Package Identifier</strong> - this is a identifier that uniquely identifies your app and is in the reverse domain format (com.domain.appname)</li>
+  <li><strong>App name</strong> - Name to be shown on user device/play store</li>
+  <li><strong>Icon file</strong> - Which is the icon to show in app drawer.</li>
+  <li><strong>List of activities</strong> - Each activity/individual screen is defined in the manifest.</li>
+  <li><strong>Permissions</strong> - Your app require maybe access to location or maybe read user contacts.</li>
+  <li><strong>Features</strong> - Your app is defined for only call enabled devices (not tablets).</li>
+  <li><strong>Min OS version supported</strong> - Defines which is the OS that can install the app and none below can.</li>
+</ul>
+
+<h1 id="gradle">Gradle</h1>
+
+<p>Gradle is the de-facto way Google has come up with to <strong>maintain dependencies</strong> in a project. Its kinda similar to cocoapods in iOS, npm in JS and composer in php.</p>
+
+<p>Your project will often contain third party code such as Facebook, Google+ or simply a lib that manages image downloads and stuff. It is tiresome to go download these files and add them to your project. Gradle solves this by maintaing the standard of dependency, you just have to add the gradle repository url for the lib you want to integrate and it will go ahead and download the files and <strong>configure your project</strong> to make the lib work properly.<br />
+<strong>Build.gradle</strong> file is used to manage this. A sample version is shown below</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
+}
+ </code></pre></figure>
+
+<h2 id="data-storage">Data Storage</h2>
+
+<p>Data storage is a important decision in every app and Android consist of few options for it</p>
+
+<ol>
+  <li><strong>Shared Preference</strong> : Shared preferences is the simple preferences saving api provided by the framework that can be used to store simple preferences like user name, favorite theme for your app and so on. It is not intended to be used for huge/complex objects.</li>
+  <li><strong>SQLite</strong> : SQLite is the most used database storage by developers due to it being a RDMS. It implements the caching, query processing, transactions and a whole list of other feature you would expect a sensitive data app to have.</li>
+  <li><strong>Direct File Storage</strong> : You can write whatever format of data with a custom blue print and read it back. Avoided by most of the developers.</li>
+  <li><strong>Realm</strong> : A new third party library that is really similar to sqlite except its syntax is more object oriented and modern, therefore, faster development!.</li>
+</ol>
+
+<h2 id="tipscommon-pitfalls">Tips/Common Pitfalls</h2>
+
+<p>In this section we point across common mistakes all developers do while developing apps and maybe you can avoid them if you know them beforehand</p>
+
+<ol>
+  <li>All xml and drawables can <strong>only use lowercase alphabets</strong>. A file like <em>MyView.xml</em> or <em>myImage.png</em> will throw an error.</li>
+  <li>Every activity needs to be defined in manifest before using it in code. You can’t open a activity which is not declared in the app’s manifest, doing so will result in a crash.</li>
+  <li>Check if you have specified permission for the feature you are coding. Many tasks require permission from the user including even accessing the internet, make sure you have added that permission in the manifest.</li>
+</ol>
+
+<hr />
+
+<h2 id="part-2---coding-your-first-app">Part 2 - Coding your first App</h2>
+
+<p>Follow along to make a simple app that stores basic user basic details using input by user and persist them for next launch.</p>
+
+<h3 id="create-a-new-project-in-android-studio">1. Create a new project in Android Studio</h3>
+
+<p>Open Android Studio and click create new project from File-&gt;New
+<img src="http://i.imgur.com/EtRgtft.jpg" alt="New Project Window" /></p>
+
+<p>Name the project <strong>UserDetails</strong> and continue to the next window. You might be seeing the option to choose the SDK, i have lollipop sdk installed, you can use any lollipop or marshmallow version and continue to next window.<br />
+Select Blank Activity template and press finish on the next screen to have default activity file name set up for you.</p>
+
+<h3 id="project-structure">Project Structure</h3>
+
+<p><img src="http://i.imgur.com/3Lgk7Bi.jpg" alt="Project Structure" /></p>
+
+<p>All your java code files reside in the <strong>src</strong> folder while the <strong>res</strong> folder consist of the assets including manifest, drawable/images, layout files etc.</p>
+
+<p>Try running the app to see the Hello World textiview ready and setup for you already.</p>
+
+<h3 id="interface">2. Interface</h3>
+
+<p>Here is what our final interface is going to look like</p>
+
+<p><img src="http://i.imgur.com/niH9V4F.jpg" alt="Interface" /></p>
+
+<p>Open up content_main.xml and replace it with the following content</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">"http://schemas.android.com/apk/res/android"</span>
+    <span class="na">xmlns:tools=</span><span class="s">"http://schemas.android.com/tools"</span>
+    <span class="na">xmlns:app=</span><span class="s">"http://schemas.android.com/apk/res-auto"</span> <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+    <span class="na">android:layout_height=</span><span class="s">"match_parent"</span> <span class="na">android:paddingLeft=</span><span class="s">"@dimen/activity_horizontal_margin"</span>
+    <span class="na">android:paddingRight=</span><span class="s">"@dimen/activity_horizontal_margin"</span>
+    <span class="na">android:paddingTop=</span><span class="s">"@dimen/activity_vertical_margin"</span>
+    <span class="na">android:paddingBottom=</span><span class="s">"@dimen/activity_vertical_margin"</span>
+    <span class="na">app:layout_behavior=</span><span class="s">"@string/appbar_scrolling_view_behavior"</span>
+    <span class="na">tools:showIn=</span><span class="s">"@layout/activity_main"</span> <span class="na">tools:context=</span><span class="s">".MainActivity"</span><span class="nt">&gt;</span>
+
+
+    <span class="nt">&lt;ImageView</span>
+        <span class="na">android:id=</span><span class="s">"@+id/imageView"</span>
+        <span class="na">android:src=</span><span class="s">"@android:drawable/sym_def_app_icon"</span>
+        <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_centerHorizontal=</span><span class="s">"true"</span><span class="nt">/&gt;</span>
+
+
+    <span class="nt">&lt;Button</span>
+        <span class="na">android:id=</span><span class="s">"@+id/updateImageButton"</span>
+        <span class="na">android:layout_below=</span><span class="s">"@id/imageView"</span>
+        <span class="na">android:layout_centerInParent=</span><span class="s">"true"</span>
+        <span class="na">android:layout_width=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:text=</span><span class="s">"Update Image"</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;LinearLayout</span>
+        <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+        <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+        <span class="na">android:layout_below=</span><span class="s">"@id/updateImageButton"</span>
+        <span class="na">android:layout_centerHorizontal=</span><span class="s">"true"</span>
+        <span class="na">android:orientation=</span><span class="s">"vertical"</span><span class="nt">&gt;</span>
+
+
+        <span class="nt">&lt;EditText</span>
+            <span class="na">android:id=</span><span class="s">"@+id/edittext"</span>
+            <span class="na">android:layout_width=</span><span class="s">"match_parent"</span>
+            <span class="na">android:layout_height=</span><span class="s">"wrap_content"</span>
+            <span class="na">android:hint=</span><span class="s">"Your Name"</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;/LinearLayout&gt;</span>
+
+<span class="nt">&lt;/RelativeLayout&gt;</span></code></pre></figure>
+
+<p>Our root layout is a RelativeLayout. In it we add a ImageView which is centered horizontally, a button to launch the intent to get the image from user gallery aligned below it.
+Then we add a vertical linear layout to just show nesting of layouts. One can simply go and put the EditText below the button by using <code class="highlighter-rouge">alignBelow</code> but we have instead put the layout below the button and inside it put the EditText.</p>
+
+<h3 id="connecting-xml-views-with-code">3. Connecting Xml Views with Code</h3>
+
+<p>Your views have been defined in xml but we need to be able to access them in our activity file. In our <code class="highlighter-rouge">onCreate</code> method of Activity we assign the layout to the activity with the id <code class="highlighter-rouge">R.layout.activity_main</code>.
+Replace your <strong>onCreate</strong> method and add a few in your activity file like below</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">AppCompatActivity</span> <span class="o">{</span>
+
+    <span class="n">ImageView</span> <span class="n">profileImg</span><span class="o">;</span>
+    <span class="n">EditText</span> <span class="n">nameTxt</span><span class="o">;</span>
+    <span class="n">Button</span> <span class="n">loadImageButton</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+
+        <span class="n">initUI</span><span class="o">();</span>
+        <span class="n">setActionListener</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="n">initUI</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">profileImg</span> <span class="o">=</span> <span class="o">(</span><span class="n">ImageView</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">imageView</span><span class="o">);</span>
+        <span class="n">nameTxt</span> <span class="o">=</span> <span class="o">(</span><span class="n">EditText</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">edittext</span><span class="o">);</span>
+        <span class="n">loadImageButton</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">updateImageButton</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="n">setActionListener</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">loadImageButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+                
+            <span class="o">}</span>
+        <span class="o">});</span>
+        
+        <span class="n">nameTxt</span><span class="o">.</span><span class="na">addTextChangedListener</span><span class="o">(</span><span class="k">new</span> <span class="n">TextWatcher</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">beforeTextChanged</span><span class="o">(</span><span class="n">CharSequence</span> <span class="n">charSequence</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i2</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">onTextChanged</span><span class="o">(</span><span class="n">CharSequence</span> <span class="n">charSequence</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i1</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i2</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">afterTextChanged</span><span class="o">(</span><span class="n">Editable</span> <span class="n">editable</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span></code></pre></figure>
+
+<p>We declare few variables at the start so that we can refer them globally inside our class. Now in our <code class="highlighter-rouge">onCreate</code> we set the contentView and then try to hook up the connections in the <code class="highlighter-rouge">initUI()</code> function we added. Do note that trying to setup connections before calling the appt <strong>setContentView</strong> call will result in a crash.</p>
+
+<p><code class="highlighter-rouge">initUI</code> method calls findViewById method to find the respective view with the id we set it in xml and then we cast it to the specific type we have made it. 
+Next we want to have the button do something on the click, so we make a <code class="highlighter-rouge">setActionListener</code> method and assign a onClickListener to the loadImageButton and a TextWatcher to our nameTxt to listen for events of text changing.</p>
+
+<h3 id="saving-user-input">4. Saving User Input</h3>
+
+<p>In our <code class="highlighter-rouge">TextWatcher</code> afterTextChanged method, add the following code</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">SharedPreferences</span><span class="o">.</span><span class="na">Editor</span> <span class="n">editor</span> <span class="o">=</span> <span class="n">PreferenceManager</span><span class="o">.</span><span class="na">getDefaultSharedPreferences</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">()).</span><span class="na">edit</span><span class="o">();</span>
+  <span class="n">editor</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">"name"</span> <span class="o">,</span> <span class="n">nameTxt</span><span class="o">.</span><span class="na">getText</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+  <span class="n">editor</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span></code></pre></figure>
+
+<p>This uses the SharedPreferences API we talked about earlier in part 1. We get the default sharedPref and get a Editor, in which we then put the text of our nameTxt content and commit the changes.</p>
+
+<h3 id="getting-user-image">5. Getting User Image</h3>
+
+<p>We will be getting the user image from the gallery of the phone and for that we need to use a <code class="highlighter-rouge">ACTION_GET_CONTENT</code> intent. Our code needs to be updated with the following new function and variables</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"> <span class="c1">// declare two new variables at the global level</span>
+  <span class="n">Uri</span> <span class="n">imageUri</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">PICTURE_REQUEST_CODE</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+  
+ <span class="kt">void</span> <span class="n">openPictureSelector</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">();</span>
+        <span class="n">intent</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">"image/*"</span><span class="o">);</span>
+        <span class="n">intent</span><span class="o">.</span><span class="na">setAction</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">ACTION_GET_CONTENT</span><span class="o">);</span>
+        <span class="n">startActivityForResult</span><span class="o">(</span><span class="n">Intent</span><span class="o">.</span><span class="na">createChooser</span><span class="o">(</span><span class="n">intent</span><span class="o">,</span> <span class="s">"Select picture"</span><span class="o">),</span> <span class="n">PICTURE_REQUEST_CODE</span> <span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="n">onActivityResult</span><span class="o">(</span><span class="kt">int</span> <span class="n">requestCode</span><span class="o">,</span> <span class="kt">int</span> <span class="n">resultCode</span><span class="o">,</span> <span class="n">Intent</span> <span class="n">data</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onActivityResult</span><span class="o">(</span><span class="n">requestCode</span><span class="o">,</span> <span class="n">resultCode</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+
+        <span class="k">switch</span> <span class="o">(</span><span class="n">requestCode</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nl">PICTURE_REQUEST_CODE:</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">resultCode</span> <span class="o">==</span> <span class="n">RESULT_OK</span><span class="o">)</span> <span class="o">{</span>
+
+                    <span class="n">imageUri</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="na">getData</span><span class="o">();</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">Bitmap</span> <span class="n">imageBitmap</span> <span class="o">=</span> <span class="n">MediaStore</span><span class="o">.</span><span class="na">Images</span><span class="o">.</span><span class="na">Media</span><span class="o">.</span><span class="na">getBitmap</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getContentResolver</span><span class="o">(),</span> <span class="n">imageUri</span><span class="o">);</span>
+                        <span class="n">profileImg</span><span class="o">.</span><span class="na">setImageBitmap</span><span class="o">(</span><span class="n">imageBitmap</span><span class="o">);</span>
+
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                    <span class="k">break</span><span class="o">;</span>
+
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span></code></pre></figure>
+
+<p>To store the image path we make a imageUri variable and make a static int variable that will be used to hold our unique code for our image pick intent. Making int for request code of intent are common practice since it improves readability rather than you simply using random integer values around your code.</p>
+
+<p><strong>OpenPictureSelector</strong> method starts the intent to get new image. We override a method <strong>onActivityResult</strong> in our activity which is called when a different activity returns a result/data to the current one.
+We get the data from the resultIntent data and get the image from the Uri and set that to our imageView.
+Call the method inside the clickListener of the loadImageButton.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">loadImageButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="n">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">view</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">openPictureSelector</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">});</span></code></pre></figure>
+
+<p>Try running the app and you clicking the update image button, after selecting a image in gallery or capturing one the image would update it inside your apps as well.</p>
+
+<h3 id="persisting-image-path-and-loading-values-on-next-launch">6. Persisting image path and loading values on next launch</h3>
+
+<p>To persist the imagePath update your onActivityResult method ‘try’ block with</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">SharedPreferences</span><span class="o">.</span><span class="na">Editor</span> <span class="n">editor</span> <span class="o">=</span> <span class="n">PreferenceManager</span><span class="o">.</span><span class="na">getDefaultSharedPreferences</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">()).</span><span class="na">edit</span><span class="o">();</span>
+  <span class="n">editor</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">"image"</span> <span class="o">,</span> <span class="n">loadImageButton</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="n">editor</span><span class="o">.</span><span class="na">commit</span><span class="o">();</span></code></pre></figure>
+
+<p>Now we have got everything working except the app doesnt load previous values we saved on launch.</p>
+
+<p>Time to add new method and call it in onCreate</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+       <span class="c1">// prev code</span>
+       <span class="n">loadDetails</span><span class="o">();</span>
+    <span class="o">}</span>
+
+
+    <span class="kt">void</span> <span class="n">loadDetails</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">SharedPreferences</span> <span class="n">preferences</span> <span class="o">=</span> <span class="n">PreferenceManager</span><span class="o">.</span><span class="na">getDefaultSharedPreferences</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">preferences</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"name"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">nameTxt</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">preferences</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span><span class="s">""</span><span class="o">));</span>
+            <span class="n">imageUri</span> <span class="o">=</span> <span class="n">Uri</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">preferences</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"image"</span><span class="o">,</span> <span class="s">""</span><span class="o">));</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">Bitmap</span> <span class="n">bitmap</span> <span class="o">=</span> <span class="n">BitmapFactory</span><span class="o">.</span><span class="na">decodeStream</span><span class="o">(</span><span class="n">getContentResolver</span><span class="o">().</span><span class="na">openInputStream</span><span class="o">(</span><span class="n">imageUri</span><span class="o">));</span>
+                <span class="n">profileImg</span><span class="o">.</span><span class="na">setImageBitmap</span><span class="o">(</span><span class="n">bitmap</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">FileNotFoundException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span></code></pre></figure>
+
+<p>That’s all we need to do, the method tries to find if our name key exist previously in pref and then set the text by retreiving value for it. We also load the imageUri and then get the bitmap from the path afterwhich it is set to the imageView.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><strong>Thank you</strong> for reading this far. Hopefully you have learned many helpful tips along the way and are now ready for your Android journey :).
+For any questions you are welcome to ask in our chat room.</p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>Please take a look at our other <a href="../../tutorials">tutorials</a> :)</p>
+
+
+  </div>
+<div id="disqus_thread" style="width:80%; margin-left: auto; margin-right: auto"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'chaosoverflow'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</article>
+
+
+    <footer class="c-footer">
+  <div class="u-container c-footer__container">
+    <p> &copy; iOS/Android [ChaosOverFlow] 2016 </a> </p>
+    <p>
+      Author : <a href="http://github.com/Shubhank101" > Shubhank </a> 
+      
+      
+      
+      
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>
