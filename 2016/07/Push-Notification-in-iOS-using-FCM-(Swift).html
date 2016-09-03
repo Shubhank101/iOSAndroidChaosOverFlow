@@ -141,6 +141,7 @@ Make sure to <strong>import Firebase</strong> in each class you use Firebase.</p
 <hr />
 
 <h2 id="step-3-implementing-token-registeration-methods">Step 3. Implementing token registeration methods</h2>
+<p>Add the following methods in your AppDelegate file</p>
 
 <figure class="highlight"><pre><code class="language-swift" data-lang="swift">    <span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span>
                      <span class="n">didRegisterForRemoteNotificationsWithDeviceToken</span> <span class="nv">deviceToken</span><span class="p">:</span> <span class="kt">NSData</span><span class="p">)</span> <span class="p">{</span>
@@ -195,10 +196,11 @@ Here is a screenshot which shows where to set the team</p>
 
 <p><img src="http://i.imgur.com/TeUQS9d.jpg" alt="Set Team" /></p>
 
-<p>Then head over to <strong>Capabilities</strong> tab in your target and Enable Push Notifications
+<p>Then head over to <strong>Capabilities</strong> tab in your target and Enable Push Notifications<br />
 <img src="http://i.imgur.com/KPRpA2d.jpg" alt="Capabilities" />
-<img src="http://i.imgur.com/NMIod1v.jpg" alt="Enabling Push" />
-Xcode will now register your app id and enable the push certificates for you.</p>
+<img src="http://i.imgur.com/NMIod1v.jpg" alt="Enabling Push" /></p>
+
+<p>Xcode will now register your app id and enable the push certificates for you.</p>
 
 <h3 id="longer-route---creating-certificate-and-provisioning-manually-for-push">Longer route - Creating certificate and provisioning manually for push</h3>
 
@@ -222,17 +224,19 @@ Xcode will now register your app id and enable the push certificates for you.</p
 <p>Now proceed to <a href="http://developer.apple.com">Developer Center</a> and login into your account.<br />
 In the App Id section - click on your app till you reach a similar screen with Edit button</p>
 
-<p><img src="http://i.imgur.com/2JH0fVt.jpg" alt="Edit App id" />
+<p><img src="http://i.imgur.com/2JH0fVt.jpg" alt="Edit App id" /><br />
 Click Edit and Scroll down to the Push certificate section
 <strong>Create a Development SSL certificate as shown in the image</strong></p>
 
 <p><img src="http://i.imgur.com/19pFIxj.jpg" alt="Create Push Certificate for App Id" /></p>
 
-<p>Click Continue in the below screen
-<img src="http://i.imgur.com/8oypmGx.jpg" alt="Create Certificate" /></p>
+<p>Click Continue in the below screen</p>
 
-<p>Select the certificate where you saved it
-<img src="http://i.imgur.com/WhGsPG4.jpg" alt="Create Certificate" /></p>
+<p><img src="http://i.imgur.com/8oypmGx.jpg" alt="Create Certificate" /></p>
+
+<p>Select the certificate where you saved it</p>
+
+<p><img src="http://i.imgur.com/WhGsPG4.jpg" alt="Create Certificate" /></p>
 
 <p>Download the aps certificate created and double click it so that it is added to the Keychain.</p>
 
@@ -246,11 +250,19 @@ Save the .p12 file now in a safe place and skip setting a password for the expor
 <p>Everytime you update the certificates for push for your app id, the provisioning profiles are required to be regenerated so that they have the entitlements set.</p>
 
 <p>Go to the provisioning center and create a new/edit development provisioning profile <strong>(make sure it has your development device udid)</strong> for your app and download it.<br />
-Open it up in your xcode and set it as the Development provisioning profile in <strong>Build Settings</strong></p>
+Open it up in your xcode and set it as the Development provisioning profile in <strong>Build Settings</strong>.</p>
 
 <hr />
 
-<h2 id="step-5-testing-push-using-firebase-console">Step 5. Testing push using Firebase Console</h2>
+<h2 id="step-5-uploading-p12-file-to-firebase">Step 5. Uploading .p12 file to Firebase</h2>
+
+<p>Head over to the Firebase project dashboard, click Project Settings -&gt; Cloud Messaging and upload the .p12 file exported in the previous step in the Development APN Certificate section</p>
+
+<p><img src="http://i.imgur.com/kKs7dkQ.jpg" alt="Uploading Developer .P12 File" /></p>
+
+<hr />
+
+<h2 id="step-6-testing-push-using-firebase-console">Step 6. Testing push using Firebase Console</h2>
 
 <p>Time to test the push feature finally after all this setup :)</p>
 
