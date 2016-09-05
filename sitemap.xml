@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/07/Push-Notification-in-iOS-using-FCM-(Swift)</loc>
+<lastmod>2016-07-02T00:00:00+05:30</lastmod>
+</url>
+<url>
 <loc>http://shubhank101.github.io/iOSAndroidChaosOverFlow/2016/06/Implementing-FCM-(-Firebase-Cloud-Messaging-)-in-Android-App</loc>
 <lastmod>2016-06-02T00:00:00+05:30</lastmod>
 </url>
