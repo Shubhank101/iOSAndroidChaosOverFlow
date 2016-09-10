@@ -32,7 +32,9 @@
     <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/">Home</a>
     <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/tutorials/">Tutorial</a>
     <a class="c-navigation__item " href="/iOSAndroidChaosOverFlow/about/">About</a>
+    <a class="c-navigation__item " target="_blank" href="http://chat.stackoverflow.com/rooms/26424/iosandroidchaosoverflow">Join Chat</a>    
   </div>
+  
 </nav>
 
 
@@ -48,42 +50,44 @@
 
 <p><strong>Extensible Messaging and Presence Protocol</strong> (XMPP) is an open XML technology for real-time communication as explained in the official <a href="https://xmpp.org/about">site</a> info section.</p>
 
-<p>Main Benefits of using it is its feature such as Presence to notify user state as well as being <strong>extensible</strong> therefore allowing you to extend its capibility to <strong>send Images and Video too</strong>.</p>
+<p>Main Benefits of using it is its feature such as Presence to notify user state as well as being <strong>extensible</strong> therefore allowing you to extend its capibility to <strong>send Images and Video too</strong>.
+Other solutions do not provide such advance features and to add user states such as typing/away is very hard to implement yet core to a chat app. Therefore, XMPP is a good choice for chat apps.</p>
 
 <hr />
 
 <h2 id="roadmap-of-tutorial">Roadmap of Tutorial</h2>
 
-<p>Before progressing to code, we should do a little review of what this tutorial will cover.</p>
+<p>Before we move on to explaining things and to code, a little review of what this tutorial will cover will be good.</p>
 
-<h4 id="how-to-run-a-ejabbered-server-on-your-maclocalhost">1) How To Run A Ejabbered Server On Your Mac/Localhost</h4>
-<p>We will be running a ejabbered xmpp server for our chat app.</p>
+<h4 id="how-to-run-a-ejabberd-server-on-your-maclocalhost">1) How To Run A Ejabberd Server On Your Mac/Localhost</h4>
+<p>We will be running a ejabberd xmpp server for our chat app. Steps to install and configure it will be given.</p>
 
 <p style="height:2px" />
 
 <h4 id="registering-a-user-through-terminal">2) Registering A User Through Terminal</h4>
-<p>Its good to get familiar with the working of server using terminal for future use.</p>
+<p>It’s good to get familiar with the working of server using terminal for future use. You can read and explore more on ejabberd site.</p>
 
 <p style="height:2px" />
 
 <h4 id="usingregistering-account-on-adium-a-jabber-client">3) Using/Registering Account On Adium (A Jabber Client)</h4>
-<p>To be able to chat b/w two persons, We need to have our app and another client for user2.</p>
+<p>To be able to chat between two user, we need to have our app (first client) and another client for user2. Adium will act as the second user</p>
 
 <p style="height:2px" />
 
 <h4 id="log-in-the-user-on-the-server-with-the-ios-app">4) Log In The User On The Server With The iOS App</h4>
-<p>Connecting and Login with the server plus handling errors.</p>
+<p>Connecting and Login with the server plus handling errors will be explained.</p>
 
 <p style="height:2px" />
 
 <h4 id="sending-tofro-message-to-the-other-user-through-ios-app">5) Sending To/Fro Message To The Other User Through iOS App.</h4>
-<p>Detecting messages from other user as well as sending.</p>
+<p>This part will have us code for messages coming from other user as well as sending message from the app.</p>
 
 <hr />
 
 <h2 id="step-1-downloading-ejabbered">Step 1. Downloading ejabbered</h2>
 
-<p>We will be using <a href="https://www.ejabberd.im/">ejabbered</a> server for our app. There are several xmpp servers available out there for you to use. <a href="https://www.igniterealtime.org/projects/openfire/">Openfire</a> is another popular alternative.</p>
+<p>We will be using <a href="https://www.ejabberd.im/">ejabbered</a> server for our app.<br />
+There are several xmpp servers available out there, <a href="https://www.igniterealtime.org/projects/openfire/">Openfire</a> being a popular alternative.</p>
 
 <p>Go ahead and download the ejabbered community server installer from <a href="https://www.process-one.net/en/ejabberd/downloads/">here</a>.</p>
 
