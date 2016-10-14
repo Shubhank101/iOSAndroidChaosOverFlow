@@ -125,18 +125,249 @@ There are several xmpp servers available out there, <a href="https://www.igniter
 
 <h2 id="step-2-registering-a-user-through-terminal">Step 2. Registering A User Through Terminal</h2>
 
-<p>• Open a Terminal folder and cd into the ejabberd path.<br />
-For version 16.06 <strong>cd /Applications/ejabberd-16.06</strong></p>
+<p>Steps are also explained here for your reference <a href="https://docs.ejabberd.im/developer/install-osx/">https://docs.ejabberd.im/developer/install-osx/</a>.</p>
+
+<p>• Open a Terminal folder and cd into the ejabberd path.</p>
+
+<p>For version 16.06 in Mac OS X. The command will be  <code class="highlighter-rouge">cd /Applications/ejabberd-16.06</code></p>
 <p style="height:2px" />
 
 <p><img src="http://i.imgur.com/My1AyvU.png" alt="ejabbered path in terminal" /></p>
 <p style="height:2px" />
 
-<p>In Progress</p>
+<p>• To run the server use the command. <code class="highlighter-rouge">sbin/ejabberdctl live</code></p>
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/My1AyvU.png" alt="ejabbered path in terminal" /></p>
+<p style="height:2px" />
+
+<p>• To register the user -&gt; use the syntax <strong>register username servername pass</strong>.<br />
+The one i have used <code class="highlighter-rouge">bin/ejabberdctl register user1 localhost pass</code></p>
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/1Kx5BDO.png" alt="ejabbered path in terminal" /></p>
+<p style="height:2px" />
+
+<hr />
+
+<h2 id="step-3-usingregistering-account-on-adium-a-jabber-client">Step 3. Using/Registering Account On Adium (A Jabber Client)</h2>
+
+<p>Since our server is setup using a XMPP  based protocol, we will be using a jabber client to connect to our server and check out how it performs.
+Go ahead and <strong>download Adium</strong> from <a href="https://adium.im/">https://adium.im/</a>.</p>
+
+<p>Install it and launch it, close any account assitant setup if it comes. Now you will see a screen something like this :</p>
+
+<p><img src="http://i.imgur.com/0byM6pM.jpg" alt="Adium" /></p>
+
+<p>• Now open Adium preferences from the top menu.</p>
+
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/m4fKgnE.jpg" alt="Adium Preference" /></p>
+<p style="height:2px" />
+
+<p>• In Account click the add button at the bottom left and select xmpp jabber account</p>
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/5EnRRGJ.jpg" alt="Adium Xabber account" /></p>
+<p style="height:2px" />
+
+<p>• Enter the username@host and then a pass - i kept 123</p>
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/ZpugE5w.jpg" alt="Username pass" /></p>
+<p style="height:2px" />
+
+<p>• A alert will come with the text <strong>“Requested URL was not found on this server”</strong>: Click ok.
+Now in the server - enter the host name i.e <strong>localhost</strong> in our case</p>
+<p style="height:2px" />
+
+<p><img src="http://i.imgur.com/fnK4vNE.jpg" alt="Username pass" /></p>
+<p style="height:2px" />
+
+<p>Clicking <strong>request new account</strong> will now register this and you will have the adium client setup for this.</p>
+
+<hr />
+
+<h2 id="step-4-log-in-the-user-on-the-server-with-the-ios-app">Step 4. Log In The User On The Server With The iOS App</h2>
+
+<p>Now with our server setup and adium running with the second user, time to move to Xcode to build the chat app.</p>
+
+<p>Open up Xcode and create a new project named <strong>XMPP</strong>. We will be using swift and cocoapods in the project so make sure to be versed in them before progressing.</p>
+
+<h3 id="setup-pods">Setup Pods</h3>
+
+<p>Init the pod for the project. Below is the podfile that i used</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="n">use_frameworks</span><span class="o">!</span>
+<span class="n">target</span> <span class="err">'</span><span class="kt">XMPP</span><span class="err">'</span> <span class="k">do</span>
+
+<span class="n">pod</span> <span class="err">'</span><span class="kt">XMPPFramework</span><span class="err">'</span><span class="p">,</span> <span class="p">:</span><span class="n">git</span> <span class="o">=&gt;</span> <span class="s">"https://github.com/robbiehanson/XMPPFramework.git"</span><span class="p">,</span> <span class="p">:</span><span class="n">branch</span> <span class="o">=&gt;</span> <span class="err">'</span><span class="n">master</span><span class="err">'</span>
+
+<span class="n">end</span></code></pre></figure>
+
+<p>Open up the workspace xcodeProj now.</p>
+
+<h3 id="viewcontroller-code">ViewController Code</h3>
+
+<p>First import the XMPPFramework.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">    
+<span class="kd">import</span> <span class="kt">XMPPFramework</span>
+
+<span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">,</span> <span class="kt">XMPPStreamDelegate</span> <span class="p">{</span>
+
+    <span class="k">var</span> <span class="nv">stream</span><span class="p">:</span><span class="kt">XMPPStream</span><span class="o">!</span>
+    
+      <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">super</span><span class="o">.</span><span class="nf">viewDidLoad</span><span class="p">()</span>
+    
+        <span class="n">stream</span> <span class="o">=</span> <span class="kt">XMPPStream</span><span class="p">()</span>
+        <span class="n">stream</span><span class="o">.</span><span class="nf">addDelegate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">delegateQueue</span><span class="p">:</span> <span class="nf">dispatch_get_main_queue</span><span class="p">())</span>
+      
+        <span class="n">stream</span><span class="o">.</span><span class="n">myJID</span> <span class="o">=</span> <span class="kt">XMPPJID</span><span class="o">.</span><span class="nf">jidWithString</span><span class="p">(</span><span class="s">"user1@localhost"</span><span class="p">)</span>
+        
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="n">stream</span><span class="o">.</span><span class="nf">connectWithTimeout</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">catch</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"error occured in connecting"</span><span class="p">)</span>
+        <span class="p">}</span> 
+    <span class="p">}</span></code></pre></figure>
+
+<p>The code is very basic. We first declare a variable <code class="highlighter-rouge">stream</code> of type <code class="highlighter-rouge">XMPPStream</code> in global scope.</p>
+
+<p>Further, we initialize the stream in <code class="highlighter-rouge">viewDidLoad</code> method, add the delegate so that we can receive event callbacks for connection successful or any failure.</p>
+
+<p>We will set a JID so that we can uniquely identify our user. Since we have already registered one user using terminal, we will use the user1@localhost here.</p>
+
+<p>Next we call the <code class="highlighter-rouge">try stream.connectWithTimeout(30)</code> method to actually connect to our <code class="highlighter-rouge">ejabberd</code> server.</p>
+
+<h3 id="adding-the-delegate-methods">Adding the Delegate methods</h3>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">    <span class="kd">func</span> <span class="nf">xmppStreamWillConnect</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"will connect"</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+    <span class="kd">func</span> <span class="nf">xmppStreamConnectDidTimeout</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"timeout:"</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+    <span class="kd">func</span> <span class="nf">xmppStreamDidConnect</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"connected"</span><span class="p">)</span>
+        
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="n">sender</span><span class="o">.</span><span class="nf">authenticateWithPassword</span><span class="p">(</span><span class="s">"123"</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">catch</span> <span class="p">{</span>
+            <span class="nf">print</span><span class="p">(</span><span class="s">"catch"</span><span class="p">)</span>
+            
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+    
+    
+    <span class="kd">func</span> <span class="nf">xmppStreamDidAuthenticate</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"auth done"</span><span class="p">)</span>
+        <span class="n">sender</span><span class="o">.</span><span class="nf">sendElement</span><span class="p">(</span><span class="kt">XMPPPresence</span><span class="p">())</span>
+    <span class="p">}</span>
+    
+
+    <span class="kd">func</span> <span class="nf">xmppStream</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">,</span> <span class="n">didNotAuthenticate</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">DDXMLElement</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"dint not auth"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="p">}</span></code></pre></figure>
+
+<p>Most of the above methods are self explanatory. In the <code class="highlighter-rouge">xmppStreamDidConnect</code> method, we try to authorize our user with the password.
+Here we use 123 as the password which we had set when registering the user.</p>
+
+<p>Run the app and if everything has been followed correctly, you will see the <strong>auth Done</strong> log in the console.</p>
+
+<hr />
+
+<h2 id="step-5-sending-tofro-message-to-the-other-user-through-ios-app">Step 5. Sending To/Fro Message To The Other User Through iOS App.</h2>
+
+<p>Declare a few more variables</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">  <span class="k">let</span> <span class="nv">xmppRosterStorage</span> <span class="o">=</span> <span class="kt">XMPPRosterCoreDataStorage</span><span class="p">()</span>
+  <span class="k">var</span> <span class="nv">xmppRoster</span><span class="p">:</span> <span class="kt">XMPPRoster</span><span class="o">!</span></code></pre></figure>
+
+<p>These will be used to maintain the roster of our user account. That way you can maintain which users you have contacted with previously and many more things.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">   <span class="c1">// new code</span>
+   <span class="n">xmppRoster</span> <span class="o">=</span> <span class="kt">XMPPRoster</span><span class="p">(</span><span class="nv">rosterStorage</span><span class="p">:</span> <span class="n">xmppRosterStorage</span><span class="p">)</span>
+   
+   <span class="c1">// previous code</span>
+   <span class="n">stream</span> <span class="o">=</span> <span class="kt">XMPPStream</span><span class="p">()</span>
+   <span class="n">stream</span><span class="o">.</span><span class="nf">addDelegate</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">delegateQueue</span><span class="p">:</span> <span class="nf">dispatch_get_main_queue</span><span class="p">())</span>
+   
+   <span class="c1">// new code</span>
+   <span class="n">xmppRoster</span><span class="o">.</span><span class="nf">activate</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+   
+   <span class="k">let</span> <span class="nv">button</span> <span class="o">=</span> <span class="kt">UIButton</span><span class="p">()</span>
+   <span class="n">button</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="o">.</span><span class="nf">redColor</span><span class="p">()</span>
+   <span class="n">button</span><span class="o">.</span><span class="nf">setTitle</span><span class="p">(</span><span class="s">"SendMessage"</span><span class="p">,</span> <span class="nv">forState</span><span class="p">:</span> <span class="o">.</span><span class="kt">Normal</span><span class="p">)</span>
+   <span class="n">button</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="kt">CGRectMake</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+   <span class="n">button</span><span class="o">.</span><span class="nf">addTarget</span><span class="p">(</span><span class="k">self</span><span class="p">,</span> <span class="nv">action</span><span class="p">:</span> <span class="err">#</span><span class="nf">selector</span><span class="p">(</span><span class="k">self</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">),</span> <span class="nv">forControlEvents</span><span class="p">:</span> <span class="o">.</span><span class="kt">TouchUpInside</span><span class="p">)</span>
+  
+   <span class="k">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">button</span><span class="p">)</span></code></pre></figure>
+
+<p>Now in <code class="highlighter-rouge">viewDidLoad</code> add the new code which is highlighted above using //new code comments.<br />
+We initialize our <code class="highlighter-rouge">xmppRoster</code>, then we activate the stream on it.
+A button is added which will simply be used to send message to other user.</p>
+
+<p><code class="highlighter-rouge">sendMessage</code> function is shown below:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift">    <span class="kd">func</span> <span class="nf">sendMessage</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="s">"Yo!"</span>
+        <span class="k">let</span> <span class="nv">senderJID</span> <span class="o">=</span> <span class="kt">XMPPJID</span><span class="o">.</span><span class="nf">jidWithString</span><span class="p">(</span><span class="s">"user2@localhost"</span><span class="p">)</span>
+        <span class="k">let</span> <span class="nv">msg</span> <span class="o">=</span> <span class="kt">XMPPMessage</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="s">"chat"</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="n">senderJID</span><span class="p">)</span>
+        
+        <span class="n">msg</span><span class="o">.</span><span class="nf">addBody</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="nf">sendElement</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="p">}</span></code></pre></figure>
+
+<p>here we create a instance of <code class="highlighter-rouge">XMPPMessage</code> class and the message type to be of <strong>chat</strong> (there are many other types of message types like subscribe which you will see shortly) and for the <strong>senderJID</strong>, we use the user2 JID which we have running in Adium.
+Using the stream object we send the message.</p>
+
+<h3 id="implementing-presence">Implementing Presence</h3>
+
+<p>Last important thing to do is to have the presence implemented so that we can recieve messages too. XMPP is based on presence and stanza concept which you can read further on wiki or its official site.</p>
+
+<p>For user2 to contact us, we need to detect the presence events it send and act accordingly. Implement the following delegate method</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">xmppStream</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">XMPPStream</span><span class="o">!</span><span class="p">,</span> <span class="n">didReceivePresence</span> <span class="nv">presence</span><span class="p">:</span> <span class="kt">XMPPPresence</span><span class="o">!</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="n">presence</span><span class="p">)</span>
+        <span class="k">let</span> <span class="nv">presenceType</span> <span class="o">=</span> <span class="n">presence</span><span class="o">.</span><span class="nf">type</span><span class="p">()</span>
+        <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">myJID</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">let</span> <span class="nv">presenceFromUser</span> <span class="o">=</span> <span class="n">presence</span><span class="o">.</span><span class="nf">from</span><span class="p">()</span><span class="o">.</span><span class="n">user</span>
+        
+        <span class="k">if</span> <span class="n">presenceFromUser</span> <span class="o">!=</span> <span class="n">username</span>  <span class="p">{</span>
+            <span class="k">if</span> <span class="n">presenceType</span> <span class="o">==</span> <span class="s">"available"</span> <span class="p">{</span>
+                <span class="nf">print</span><span class="p">(</span><span class="s">"available"</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="n">presenceType</span> <span class="o">==</span> <span class="s">"subscribe"</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">xmppRoster</span><span class="o">.</span><span class="nf">subscribePresenceToUser</span><span class="p">(</span><span class="n">presence</span><span class="o">.</span><span class="nf">from</span><span class="p">())</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+                <span class="nf">print</span><span class="p">(</span><span class="s">"presence type"</span><span class="p">);</span> <span class="nf">print</span><span class="p">(</span><span class="n">presenceType</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+   
+    <span class="p">}</span></code></pre></figure>
+
+<p>Here we filter out the presenceType, stream JID username and then the presence sender username. This is done to filter out any presence from the same user to itself.
+Next we detect few individual presenceType such as <strong>available</strong> and <strong>subscribe</strong>. First time the user2 tries to contact us: we will recieve a subscribe presence and until we add that user to our roster, the message will not be recieved.
+Therefore, in the subscribe presence we add the presence sender to our roster and then the presence can be worked upon to retrieve messages.</p>
 
 <h2 id="conclusion">Conclusion</h2>
 
 <p><strong>Thank you</strong> for reading this far. For any questions you are welcome to ask in our chat room.</p>
+
+<h3 id="for-further-info">For further info</h3>
+
+<p><a href="https://github.com/robbiehanson/XMPPFramework">XMPPFramework</a>
+<a href="https://en.wikipedia.org/wiki/XMPP">XMPP Wikipedia</a></p>
 
 <h2 id="next-steps">Next Steps</h2>
 
